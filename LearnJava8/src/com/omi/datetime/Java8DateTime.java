@@ -9,7 +9,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public class Java8DateTime {
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		Java8DateTime dateTime = new Java8DateTime();
 		dateTime.showDate();
 		dateTime.getDay();

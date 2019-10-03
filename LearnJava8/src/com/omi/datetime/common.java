@@ -1,13 +1,15 @@
 package com.omi.datetime;
 
 public class common {
-	public void show(String name)
-	{
+	public void show(String name) {
+
+		String b = "name1";
+		System.out.println(b);
+		System.out.println("SS");
 
 		 String b ="name2";
-
-		
-
-
+		 String c ="name3";
+		 System.out.println(c);
+		 System.out.println(b);
 	}
 }
