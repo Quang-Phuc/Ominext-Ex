@@ -8,6 +8,10 @@ public class common {
 		 System.out.println(b);
 		 System.out.println(""+b);
 		 System.out.println(""+b);System.out.println(b);
+		 System.out.println(""+b);
+		 System.out.println(b);
+		 System.out.println(""+b);
+		 System.out.println(""+b);System.out.println(b);
 	}
 
 }
