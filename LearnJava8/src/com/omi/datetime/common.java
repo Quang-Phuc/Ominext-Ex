@@ -4,16 +4,10 @@ public class common {
 	public void show(String name)
 	{
 
-
-		 String b ="Phuc";
+		 String b ="name1";
 		 System.out.println(""+b);
-		 System.out.println(b);
-		 System.out.println(""+b);
-		 System.out.println(""+b);System.out.println(b);
-		 System.out.println(""+b);
-		 System.out.println(b);
-		 System.out.println(""+b);
-		 System.out.println(""+b);System.out.println(b);
+		 
+		
 
 	}
 }
