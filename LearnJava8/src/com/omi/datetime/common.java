@@ -5,6 +5,7 @@ public class common {
 
 		String b = "name1";
 		System.out.println(b);
+		System.out.println("SS");
 
 	}
 }
