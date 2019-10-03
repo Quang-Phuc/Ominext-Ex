@@ -3,8 +3,17 @@ package com.omi.datetime;
 public class common {
 	public void show(String name)
 	{
-		String  password ="NVA";
-		System.out.println(password);
-		
+
+
+		 String b ="Phuc";
+		 System.out.println(""+b);
+		 System.out.println(b);
+		 System.out.println(""+b);
+		 System.out.println(""+b);System.out.println(b);
+		 System.out.println(""+b);
+		 System.out.println(b);
+		 System.out.println(""+b);
+		 System.out.println(""+b);System.out.println(b);
+
 	}
 }
