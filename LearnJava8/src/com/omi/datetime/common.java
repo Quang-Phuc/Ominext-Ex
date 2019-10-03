@@ -4,7 +4,7 @@ public class common {
 	public void show(String name)
 	{
 
-		 String b ="name1";
+		 String b ="name2";
 
 		
 
