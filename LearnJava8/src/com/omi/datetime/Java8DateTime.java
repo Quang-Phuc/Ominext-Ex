@@ -1,5 +1,6 @@
 package com.omi.datetime;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -88,5 +89,12 @@ public class Java8DateTime {
         int years = period.getYears();
         System.out.println("Day :"+days+" Month :"+months+" Years :"+years);
 	}
+	public void InstantExample()
+	{
+
+		Instant instant = Instant.now();
+		System.out.println(instant);
+	}
+	
 
 }
