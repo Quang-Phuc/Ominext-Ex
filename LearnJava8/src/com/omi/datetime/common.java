@@ -5,9 +5,9 @@ public class common {
 	{
 
 		 String b ="name1";
-		 System.out.println(""+b);
-		 
+
 		
+
 
 	}
 }
