@@ -1,13 +1,10 @@
 package com.omi.datetime;
 
 public class common {
-	public void show(String name)
-	{
+	public void show(String name) {
 
-		 String b ="name1";
-
-		
-
+		String b = "name1";
+		System.out.println(b);
 
 	}
 }
