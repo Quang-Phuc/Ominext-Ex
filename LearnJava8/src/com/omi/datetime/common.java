@@ -5,7 +5,9 @@ public class common {
 	{
 
 		 String b ="name2";
-
+		 String c ="name3";
+		 System.out.println(c);
+		 System.out.println(b);
 		
 
 
