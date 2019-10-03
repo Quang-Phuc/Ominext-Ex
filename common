@@ -1,0 +1,187 @@
+[33mcommit 341e1c0486fc1e88331ab9697881401b4921fad6[m[33m ([m[1;36mHEAD -> [m[1;32mphuclq[m[33m, [m[1;31morigin/phuclq[m[33m)[m
+Merge: 8838105 fffe06e
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:55:23 2019 +0800
+
+    Phic
+
+[33mcommit 88381057db32466a7336a5ce959ba96530d135b5[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:51:14 2019 +0800
+
+    edit file commmon
+
+[33mcommit fffe06ed026a3b42f24542c66e3a3d07ba4318be[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 0093af1 57558e7
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:48:07 2019 +0800
+
+    Merge pull request #7 from Quang-Phuc/phuclq
+    
+    Phuclq
+
+[33mcommit 57558e71d9ccf7c23f91518bc858d50d7f2692d4[m
+Merge: 4e7d9a8 0093af1
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:47:59 2019 +0800
+
+    Merge branch 'master' into phuclq
+
+[33mcommit 4e7d9a81ff2a9f1d0d70d4027560263adb61b3fd[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:42:48 2019 +0800
+
+    a
+
+[33mcommit 73556330952d71249a1d1c2220de27c26ffc266f[m
+Merge: b1c4e19 21bd8c7
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:15:25 2019 +0800
+
+    avb
+
+[33mcommit 0093af1f5189c87f7a82f995f7e51856280fa5b5[m
+Merge: 0e7df19 409ddfe
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:12:14 2019 +0800
+
+    Merge pull request #6 from Quang-Phuc/revert-5-phuclq
+    
+    Revert "Phuclq"
+
+[33mcommit 409ddfe3ad717c7509ce66b762690953ab6df458[m
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:11:47 2019 +0800
+
+    Revert "Phuclq"
+
+[33mcommit b1c4e19d20744a4df459ec249a1d1b4049bb7882[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 17:05:31 2019 +0800
+
+    b
+
+[33mcommit 0e7df1940d4f16c2bdce160d0bcac112cf5a8a5a[m
+Merge: d0da2fb 21bd8c7
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 16:11:57 2019 +0800
+
+    Merge pull request #5 from Quang-Phuc/phuclq
+    
+    Phuclq
+
+[33mcommit 21bd8c7b813343a7f408c0b2d4d7e6629740feb8[m
+Merge: 3042c6c d0da2fb
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 16:11:49 2019 +0800
+
+    Merge branch 'master' into phuclq
+
+[33mcommit 3042c6ca7159fdb1c6899539f09df53ae8528157[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 16:03:53 2019 +0800
+
+    a
+
+[33mcommit 9c9bc4c2f9212f80747a5f400350a303ee180fe0[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 16:02:29 2019 +0800
+
+    a
+
+[33mcommit 7c8aac19f6145739bdfca5a7776ad97653b3ba57[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 15:57:34 2019 +0800
+
+    a
+
+[33mcommit d0da2fb29eb57dd2743f50a58801178c4887b326[m
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 15:49:25 2019 +0800
+
+    Update common.java
+
+[33mcommit 6fd92d861d648e76ac2bca0e0228c1ab36e7b414[m
+Merge: 98b52c9 1dd345f
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 15:16:57 2019 +0800
+
+    Merge pull request #4 from Quang-Phuc/phuclq
+    
+    add DateTime
+
+[33mcommit 1dd345f3e5c6fa5b4c667e21212427ee82fd5ab6[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 15:15:01 2019 +0800
+
+    add DateTime
+
+[33mcommit 98b52c9088968557b54f523e5738714002ba7b17[m
+Merge: 39fda0e e336a7b
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 12:14:14 2019 +0800
+
+    Merge pull request #3 from Quang-Phuc/phuclq
+    
+    Phuclq
+
+[33mcommit e336a7b657c55047968c4ab165afdd168214f3ad[m
+Merge: 8b3ac31 39fda0e
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 12:12:37 2019 +0800
+
+    Merge branch 'master' of https://github.com/Quang-Phuc/Ominext into phuclq
+
+[33mcommit 8b3ac315864fc2501ad0fc0244c23f9b4269290b[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 12:09:58 2019 +0800
+
+    add Java8 API Date
+
+[33mcommit 39fda0e86b4b9138db474ca48e2f816cd2584e13[m
+Merge: a18909e d8a44d5
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Thu Oct 3 10:23:19 2019 +0800
+
+    Merge pull request #2 from Quang-Phuc/phuclq
+    
+    Phuclq
+
+[33mcommit d8a44d5788a9e3989ea62c80d70ff006753da52c[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 19:15:18 2019 +0800
+
+    add Lambda
+
+[33mcommit a18909e45cb7f161b4d5a914d7328040be76a0be[m
+Merge: d045b32 f0616e6
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 19:14:25 2019 +0800
+
+    Merge pull request #1 from Quang-Phuc/phuclq
+    
+    test brach
+
+[33mcommit 3d10c2118345d7ad5342ead818671fe1fdaafac0[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 17:05:49 2019 +0800
+
+    Test commit file used phuclq
+
+[33mcommit f0616e6d62b4c18e7b8e7ec6a76a680e638a0cdc[m
+Author: Tên của bạn <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 16:38:58 2019 +0800
+
+    test brach
+
+[33mcommit d045b329235b064a153baba09842bcf4e69231e7[m
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 15:25:31 2019 +0800
+
+    Add files via upload
+
+[33mcommit 732e6960d9c2a697179d9de240947892c5fe0a51[m
+Author: Java_struts1 <lamquangphuc1996@gmail.com>
+Date:   Wed Oct 2 15:24:37 2019 +0800
+
+    Initial commit
