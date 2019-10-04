@@ -17,8 +17,10 @@ public class common {
 		 
 		 String  e ="test";
 		 System.out.println(e);
+
 		
 		String  f ="test";
 		 System.out.println(f);
+
 	}
 }
