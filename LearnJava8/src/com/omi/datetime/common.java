@@ -11,5 +11,8 @@ public class common {
 		 String c ="name3";
 		 System.out.println(c);
 		 System.out.println(b);
+		 
+		 String  d ="test";
+		 System.out.println(d);
 	}
 }
