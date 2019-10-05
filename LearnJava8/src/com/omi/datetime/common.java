@@ -6,6 +6,7 @@ public class common {
 		
 		System.out.println(inputArray);
 		System.out.println(inputArray);
+		System.out.println("linh");
 
 	}
 }
