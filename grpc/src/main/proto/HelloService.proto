@@ -1,0 +1,20 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package org.baeldung.grpc;
+
+message HelloRequest {
+    // Khai bao bien firstName va lastName va age co so thu tu là 1 2 3
+    string firstName = 1;
+    string lastName = 2;
+    string age =3;
+}
+
+message HelloResponse {
+    // khia bao greeting co so thu tu la 1
+    string greeting = 1;
+}
+
+service HelloService {
+    rpc hello(HelloRequest) returns (HelloResponse);
+    // HelloService nhan thong tin tu phia HelloRequest xu ly va tra ve HelloResponse
+}
