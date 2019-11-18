@@ -32,6 +32,35 @@ public class StringtoDate {
 		
 		return dateList;
 	}
+	/*public ATWorkingTimeCSVReponse getWorkingTimeCSV(ATWorkingTimeCSVRequest request) {
+        ATWorkingTimeCSVReponse.Builder response = ATWorkingTimeCSVReponse.newBuilder();
+        String checkStart ;
+        String checkEnd = "checkEnd";
+        String startDate = request.getStartDate();
+        String endDate = request.getEndDate();
+        List<String> stringDate = getListDate(startDate, endDate);
+        List<CheckingLog> checkingLogs = checkingLogRepository.findByOfficeUserIdInAndTargetDateIn(request.getOficeUserIdList(), stringDate);
+        List<CheckingLog> staffLogs;
+        List<String> officeUserIds = request.getOficeUserIdList();
+        List<String> stringListDate = checkingLogs.stream().map(CheckingLog::getTargetDate).collect(Collectors.toList());
+        for (String dateNow : stringListDate) {
+            for (String officeUserId : officeUserIds) {
+                staffLogs = checkingLogs.stream()
+                        .filter(log -> log.getOfficeUserId().equals(officeUserId) && log.getTargetDate().equals(dateNow))
+                        .collect(Collectors.toList());
+                checkStart = DatesUtils.convertDateToString(staffLogs.get(0).getCheckedAt());
+                if (staffLogs.size() % 2 == 0) {
+                    checkEnd = DatesUtils.convertDateToString(staffLogs.get(staffLogs.size() - 1).getCheckedAt());
+                }
+                String finalCheckStart = checkStart;
+                String finalCheckEnd = checkEnd;
+                List<ATWorkingTimeCSVReponse.WorkingTimeCSV> workingTimeCSVList = checkingLogs
+                        .stream().map(CheckingLog -> CheckingLog.asWorkingTimeCSV(finalCheckStart, finalCheckEnd)).collect(Collectors.toList());
+                response.addAllWorkingtimeCSV(workingTimeCSVList);
+                response.addAllWorkingtimeCSV(workingTimeCSVList);
+            }
+        }
+        return response.build();*/
 	public void learnMap()
 	{
 		Map<Integer, String> map = new TreeMap<Integer, String>();
