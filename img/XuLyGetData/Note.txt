@@ -1,0 +1,68 @@
+Alt + Insert : them phuong thuc
+D:\Drjoy\protobuf\src\main : xoa file nay di khi sua trong file .proto
+285 : getdata
+Task : Get thông tin từ data lên
+call API : AT0002Controller
+Khai báo Url : resources\endpoint.yml :255 : getdata
+call API : AT0002Controller
+create service :AttendanceService.java 
+OfficeUser
+
+ATGetOfficeUserDataResponse
+------------------
+
+B1 :vào file (endpoint.yml) tạo đường dẫn Url
+B2 : Tạo API : file (AT0002Controller ) tạo requesMapping : Tại đây nhớ khi gọi thì cần
+
+private RegistrationService registrationService;
+    public AT0002Controller(AttendanceService attendanceService, RegistrationService registrationService) {
+        this.attendanceService = attendanceService;
+        this.registrationService = registrationService;
+    }
+-> Không sẽ bị null
+B3: Khai bao trong file proto
+message Namerequest
+{
+string keyword = 1; 
+}
+message Namerepont
+{
+String name =1;
+}
+rpc GetOffices (Namerequest) returns (Namerepont);
+-> Tại bước 3 Khai báo keyword là giá trị đầu vào và server sẽ nhận dữ liệu đầu vào đó xử lý trả kq là Namerepont
+B4:file RegistrationService 
+- Sét giá trị cho request vào gọi đến resonse để xử lý
+B5 :Tìm đến file RegistrationGrpc -> Tìm RegistrationGrpcServer tìm đến stub.A -> Tìm A
+B6 : file RegistrantionGrpcServer ->  @Override hàm khai báo trong rpc và khai báo triển khai
+b7 :OfficeUsrService -> xử lý của Server tại đây gọi đến OfficeUserRepository
+----------------------------------------
+Khai bao reponse trả về 1 Object
+trog file .proto tại message reponse trả về khai báo dựa vào message có sẵn trong file 
+ví dụ  repeated OfficeUserMessage officeUsers = 1;
+B2: Tại class Object (OfficeUser ) khai báo 1 Contructor  public OfficeUser(OfficeUserMessage officeUserMessage) {
+        this.id = officeUserMessage.getId();
+        this.userId = officeUserMessage.getUserId();
+        this.officeId = officeUserMessage.getOfficeId();
+    }
+B3 : Thực hiện xử lý của Server (OficeUserService.java)
+ public ListOfficeUsersFullResponse getListOfficeUserFull(ListOfficeUsersFullRequest request )
+    {
+        ListOfficeUsersFullResponse.Builder response = ListOfficeUsersFullResponse.newBuilder();
+
+        List<OfficeUser> OfficeUserList = officeUserRepository.findOfficeUsersWithEmail(request.getMailAddress());
+
+        return  response.build();
+
+    }
+B4.Tạo xử lý tại RegistrationServer như sau 
+ public List<OfficeUser> getListOfficeUserFull(String mailAddress)
+    {
+        ListOfficeUsersFullRequest request = ListOfficeUsersFullRequest.newBuilder()
+            .setMailAddress(mailAddress).build();
+        RegistrationGrpc.RegistrationBlockingStub
+            stub = RegistrationGrpc.newBlockingStub(registrationChannel);
+        ListOfficeUsersFullResponse response = stub.getListOfficeUserFull(request);
+
+        return response.getOfficeUsersList().stream().map(OfficeUser::new).collect(Collectors.toList());
+    }

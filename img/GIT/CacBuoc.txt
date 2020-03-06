@@ -1,0 +1,5 @@
+B1: Checkout as : Lay code tai nhanh coconut ve;
+B2: tao branh va thuc hien code ( vd : Tạo nhánh phuclq1)
+B3 :Checkout sang nhánh coconut và thực hiện pull ( Lấy code ms nhất )
+B4 : Merge nhánh coconut sang nhánh phuclq1
+b5 : push code nhanh phuclq1 lên

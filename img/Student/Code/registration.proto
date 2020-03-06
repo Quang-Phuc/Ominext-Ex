@@ -1,0 +1,3530 @@
+/**
+ * Registrationサービスに関わる機能を提供します.
+ *
+ * @author: kadonome
+ */
+syntax = "proto3";
+
+//import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+import "admin.proto";
+
+// =@Do not modify@=
+option java_package = "jp.drjoy.core.autogen.grpc.registration";
+option java_multiple_files = true;
+
+option go_package = "github.com/dr-joy/genproto/apis/registration";
+
+package registration;
+// =================
+
+/**
+ * Registration.
+ */
+service Registration {
+
+    /// ログインユーザーのセッション情報を取得します。
+    ///
+    /// * NOT_FOUND
+    /// * DATA_LOSS
+    rpc GetUserSession (google.protobuf.Empty) returns (REUserSessionResponse);
+
+    /// パスワードを変更します。
+    ///
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED 保存に失敗しました) if current password mismatch.
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) if new password is invalid.
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc UpdatePassword (REUpdatePasswordRequest) returns (google.protobuf.Empty);
+
+    /// Check password when change loginId
+    // TODO : confirm customer flow check password of user
+    rpc CheckPassword (RECheckPasswordRequest) returns (RECheckPasswordResponse);
+
+    /// 通知設定を取得します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetNotificationSettings (google.protobuf.Empty) returns (RENotificationSettings);
+
+    /// 通知設定を更新します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc PutNotificationSettings (RENotificationSettings) returns (google.protobuf.Empty);
+
+    /// サイドメニュー設定を取得します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetSideMenuSettings (google.protobuf.Empty) returns (RESideMenuSettings);
+
+    /// サイドメニューを編集します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc PutSideMenuSettings (RESideMenuSettings) returns (google.protobuf.Empty);
+
+    /// 所属一覧を取得します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetDepartments (google.protobuf.Empty) returns (REGetDepartmentResponse);
+
+    /// 事業所IDに紐づく所属一覧を取得します。
+    ///
+    /// * NOT_FOUND
+    rpc GetDepartmentsByOfficeId (REGetDepartmentsByOfficeIdRequest) returns (REGetDepartmentResponse);
+
+    /// 所属一覧を更新します。
+    ///
+    /// * Q: メンバーがいる所属を削除しようとするとエラー？
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc PutDepartments (REPutDepartmentRequest) returns (google.protobuf.Empty);
+
+    // List OfficeUsers with conditions.
+    //
+    // List, filter, sort and paginate both OfficeUser and MRUser with full properties.
+    rpc ListOfficeUsers (ListOfficeUsersRequest) returns (ListOfficeUsersResponse) {
+        //option (google.api.http) = { get: "/office_users" };
+    }
+
+    /// ListOfficeIdAndUserId
+    rpc ListOfficeIdAndUserId (REOfficeIdAndUserIdRequest) returns (REListOfficeIdAndUserIdResponse) {
+    }
+
+    // Get OfficeUser.
+    //
+    // Get OfficeUser or MRUser with full properties.
+    // - NOT_FOUND if resource with the specified ID does not exist.
+    rpc GetOfficeUser (GetOfficeUserRequest) returns (OfficeUserMessage) {
+        //option (google.api.http) = { get: "/office_users/{id}" };
+    }
+
+    // List Offices.
+    rpc ListOffices (ListOfficesRequest) returns (ListOfficesResponse) {
+        //option (google.api.http) = { get: "/offices" };
+    }
+
+    // Get Office.
+    // - NOT_FOUND if resource with the specified ID does not exist.
+    rpc GetOffice (GetOfficeRequest) returns (OfficeMessage) {
+        //option (google.api.http) = { get: "/offices/{id}" };
+    }
+
+    /// スタッフ一覧を取得します。
+    rpc ListUsers (REListUsersRequest) returns (REListUsersResponse);
+
+    /// ユーザ情報取得
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetUser (REGetUserRequest) returns (REUser);
+
+    //Used for ME0001 only
+    rpc GetUserList (REGetUserListRequest) returns (REListUser);
+
+    /// ユーザ情報更新
+    ///
+    /// * Q: 所属グループの管理者がいなくなる場合はエラー？
+    /// * ALREADY_EXISTS (COMMON_SAVE_FAILED) 変更しようとしたuserIdが既に使われている
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) dateフォーマットがおかしい
+    /// * INTERNAL (COMMON_SAVE_FAILED) if saving OfficeUser without full privilege?
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc PutUser (REUser) returns (REUserResponse);
+
+    /// アカウントロック解除
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc UnlockUser (REUnlockUserRequest) returns (google.protobuf.Empty);
+
+    /// アカウントロック
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc LockUser (RELockUserRequest) returns (google.protobuf.Empty);
+
+    /// Unlock MRUser
+    rpc UnlockMRUser (REUnlockMRUserRequest) returns (google.protobuf.Empty);
+
+    /// Lock MRUser
+    rpc LockMRUser (RELockMRUserRequest) returns (google.protobuf.Empty);
+
+    /// アカウント削除
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc DeleteUser (REDeleteUserRequest) returns (google.protobuf.Empty);
+
+    // Delete list user
+    rpc deleteListUser (REDeleteListUserRequest) returns (google.protobuf.Empty);
+
+    /// メールアドレス変更予約情報を取得します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) ReservationTokenが見つからない、など
+    rpc GetMailAddressChangeReservation (REGetMailAddressChangeReservationRequest) returns (REGetMailAddressChangeReservationResponse);
+
+    /// 通知メールアドレスの変更を行います。
+    ///
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) MailChangeRequestStatusがACCEPTEDでない
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) currentPasswordが一致しない
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc UpdateMailAddress (REUpdateMailAddressRequest) returns (REUpdateMailAddressResponse);
+
+    /// 追加メールアドレス変更予約情報を取得します。
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) ReservationTokenが見つからない、など
+    rpc GetAdditionalMailAddressChangeReservation (REGetAdditionalMailAddressChangeReservationRequest) returns (REGetAdditionalMailAddressChangeReservationResponse);
+
+    /// 通知メールアドレスの変更を行います。
+    ///
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) MailChangeRequestStatusがACCEPTEDでない
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) currentPasswordが一致しない
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc UpdateAdditionalMailAddress (REUpdateAdditionalMailAddressRequest) returns (REUpdateMailAddressResponse);
+
+    /// キーコード登録
+    /// Register UserProvisionalEntry.
+    ///
+    /// Send invitation mail to MR for the MedicalOffice specified by the KeyCode.
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) 指定のKeyCodeの病院が存在しない
+    rpc RegisterKeyCode (RERegisterKeyCodeRequest) returns (google.protobuf.Empty);
+
+    /// 登録情報取得処理
+    /// Get UserProvisionalEntry.
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) Tokenが見つからない
+    rpc GetUserEntry (REGetUserEntryRequest) returns (REGetUseEntryResponse);
+
+    /// ユーザ登録
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) if IdentificationUpdated date format is invalid.
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) if birthDate format is invalid.
+    rpc CreateUser (RECreateUserRequest) returns (RECreateUserResponse);
+
+    /// 社員一覧検索
+    rpc ListStaffs (REListStaffsRequest) returns (REListStaffsResponse);
+
+    /// 担当病院取得
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc ListHandlingHospitals (REListHandlingHospitalsRequest) returns (REListHandlingHospitalsResponse);
+
+    // Get list handling hospital with history
+    rpc ListHandlingHospitalsWithHistory (REListHandlingHospitalsWithHistoryRequest) returns (REListHandlingHospitalsResponse);
+
+    rpc ListHandlingHospitalsByOfficeId (REListHandlingHospitalsByOfficeIdRequest) returns (REListHandlingHospitalsResponse);
+
+    /// 担当病院登録
+    ///
+    /// * ALREADY_EXISTS (R0012.E002_2 既に登録済みです)
+    /// * ALREADY_EXISTS (R0012.E005_1 既に登録済みです) そのKeyCodeのその他の病院が見つからない
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) Tokenが無効
+    /// * NOT_FOUND (COMMON_SAVE_FAILED) office nameが空
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) 必要な情報が足りていない
+    rpc CreateHandlingHospitals (RECreateHandlingHospitalsRequest) returns (google.protobuf.Empty);
+
+    /// 担当病院削除
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc DeleteHandlingHospitals (REDeleteHandlingHospitalsRequest) returns (google.protobuf.Empty);
+
+    /// Pr招待処理
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc InvitePrUsers (REInvitePrUsersRequest) returns (REInvitePrUsersResponse);
+
+    /// Dr一括招待
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc InviteUsers (REInviteUsersListRequest) returns (REInviteUsersResponse);
+
+    /// メール送信処理
+    rpc SendMail (RESendMailRequest) returns (RESendMailResponse);
+
+    /// 仮登録ユーザ
+    ///
+    /// * NOT_FOUND
+    rpc ListProvisionalUsers (REListProvisionalUsersRequest) returns (REListProvisionalUsersResponse);
+
+    rpc DownloadProvisionalUsers (REListProvisionalUsersRequest) returns (REDownloadProvisionalUsersResponse);
+
+    /// ユーザ情報取得
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetPrUser (REGetPrUserRequest) returns (REPrUser);
+    rpc ListPrUser (REListPrUserByIdsRequest) returns (REListPrUser);
+
+    /// Get pr user by officeUserId or userId
+    rpc getPrUserByOfficeUserIdOrUserId (REGetPrUserByOfficeUserIdOrUserIdRequest) returns (REPrUser);
+
+    /// ユーザ情報更新
+    ///
+    /// * ALREADY_EXISTS (COMMON_SAVE_FAILED) 変更しようとしたloginIdが既に使われている
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) dateフォーマットがおかしい
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc PutPrUser (REPrUser) returns (google.protobuf.Empty);
+
+    /// 社員一覧検索
+    ///
+    /// * INVALID_ARGUMENT (COMMON_SAVE_FAILED) requestがnull
+    rpc ListPrUsers (REListPrUsersRequest) returns (REListPrUsersResponse);
+
+    /// ユーザ連携情報一覧取得
+    rpc ListUserConnection (REListUserConnectionRequest) returns (REListUserConnectionResponse);
+
+    /// ユーザ連携情報追加
+    rpc AddUserConnection (REAddListUserConnectionRequest) returns (google.protobuf.Empty);
+
+    /// ブロックユーザ一覧
+    rpc ListBlockUsers (REListBlockUsersRequest) returns (REListBlockUsersResponse) {
+    }
+    /// 担当者一覧
+    rpc ListAsignees (REListAsigneesRequest) returns (REListAsigneesResponse) {
+    }
+
+    /// 過去の担当者一覧
+    rpc ListAsigneesHistory (REListAsigneesHistoryRequest) returns (REListAsigneesHistoryResponse) {
+    }
+
+    /// 本人確認ステータス変更
+    rpc PutIdentifyStatus (REPutIdentifyStatusRequest) returns (google.protobuf.Empty) {
+    }
+
+    /// 送信制限変更処理
+    rpc PutMeetingRestriction (REPutMeetingRestrictionRequest) returns (google.protobuf.Empty) {
+    }
+
+    /// 面会情報取得
+    rpc ListMeetingConfigure (REListMeetingConfigureRequest) returns (REListMeetingConfigureResponse) {
+    }
+
+    /// Updating meeting configure after updated meeting settings
+    rpc PutMeetingConfigure (REMeetingConfigure) returns (google.protobuf.Empty) {
+    }
+
+    /// 面会先医師一覧取得
+    rpc ListVisitableUsers (REListVisitableUsersRequest) returns (REListVisitableUsersResponse) {
+    }
+
+    /// 事業所設定取得
+    rpc GetOfficeSettings (REGetOfficeSettingsRequest) returns (REGetOfficeSettingsResponse) {
+    }
+
+    /// 事業所設定更新
+    rpc PutOfficeSettings (REPutOfficeSettingsRequest) returns (google.protobuf.Empty) {
+    }
+
+    /// ME0001 Get the list MRUser who handle a the office
+    rpc ListMRUserHandleOffice (REListMRUserHandleOfficeRequest) returns (REListMRUserHandleOfficeResponse) {
+    }
+
+    /// ME0015 Get the list User who have the authority can be FPS_2 (the mediator authority)
+    /// or FPS_3 (The authority to be meeting)
+    rpc ListUserByAuthorityAndOfOffice (REListUserSpecifiedAuthorityRequest) returns (REListUserSpecifiedAuthorityResponse) {
+    }
+    //AP5006
+    rpc ListMailUnConfirmAdditional (REListMailUnConfirmAdditionalRequest) returns (REListMailUnConfirmAdditionalResponse);
+
+    //TODO : remove when finish test
+    rpc InitTestData (google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    /// update image profile of user
+    rpc UpdateImageProfile (REUpdateImageProfileRequest) returns (google.protobuf.Empty);
+
+    /// update image profile only of user
+    rpc UpdateImageProfileOnly (REUpdateImageProfileOnlyRequest) returns (google.protobuf.Empty);
+
+    /// get user by officeId
+    ///
+    /// * NOT_FOUND (COMMON_SAVE_FAILED)
+    rpc GetUserByOfficeUserId (REGetUserByOfficeUserIdRequest) returns (REUser);
+
+    rpc getUserByOfficeUserIdOrUserId (REGetUserByOfficeUserIdOrUserIdRequest) returns (REUser);
+
+    /// ME0001
+    rpc GetListUser (REUserListRequest) returns (REUserListRespone);
+    /// ME0017
+    rpc GetListUserByOfficeIdAndUserId (REUserListRequest) returns (REUserListRespone);
+    /// ME0015
+    rpc GetListHandleUsers (REUserRequest) returns (REUserListRespone);
+
+    /// personal registration
+    rpc UpdatePersonalAccount (REPersonalUserRequest) returns (google.protobuf.Empty);
+
+    /// get user infor personal registration
+    rpc GetPersonalAccount (google.protobuf.Empty) returns (REPersonalUserResponse);
+
+    /// Forget Password
+    rpc ForgetPassword (REForgetPasswordRequest) returns (google.protobuf.Empty);
+
+    /// Reset Password
+    rpc ResetPassword (REResetPasswordRequest) returns (google.protobuf.Empty);
+
+    /// update indentify
+    rpc UpdateIdentify (google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    /// RE0036 Option Setting of Pr
+    rpc allowDrSeen (REAllowDrSeenRequest) returns (REAllowDrSeenResponse);
+
+    /// Get detail user with officeUserId
+    rpc GetMRUser (REGetMrUserRequest) returns (REGetMrUserResponse);
+
+    /// Update image profile and identification image
+    rpc UpdateImageProfileAndIdentificationImage (UpdateImageProfileAndIdentificationImageRequest) returns (google.protobuf.Empty);
+
+    rpc getListOfficeIdHandlingHospital (REGetListOfficeIdHandlingHospitalRequest) returns (REGetListOfficeIdHandlingHospitalResponse);
+
+    /// List user by officeUserId
+    rpc ListUserByOfficeUserId (REListUserByOfficeUserIdRequest) returns (REListUserByOfficeUserIdResponse);
+
+    /// List Office by list officeId
+    rpc ListOfficeByListOfficeId (REListOfficeByListOfficeIdRequest) returns (REListOfficeByListOfficeIdResponse);
+
+    rpc GetListUserByCondition (REGetListUserByConditionRequest) returns (REGetListUserByConditionResponse);
+
+    rpc GetListDrWithCondition (REGetListDrWithConditionRequest) returns (REGetListDrWithConditionResponse);
+
+    // ME0050: list DR when search
+    rpc ListMedicalOfficeUser (REListMedicalOfficeUserRequest) returns (REListMedicalOfficeUserResponse) {
+    };
+
+    // ME0050: list MrShareInfoStatus by DR or/and MR
+    rpc ListMrShareInfoStatus (REListMrShareInfoStatusRequest) returns (REListMrShareInfoStatusResponse);
+
+    // ME0050: put MrShareInfoStatus
+    rpc PutMrShareInfoStatus (REPutMrShareInfoStatusRequest) returns (REPutMrShareInfoStatusResponse) {
+    };
+
+    rpc GetListOffice (REGetListOfficeRequest) returns (REGetListOfficeResponse);
+
+    //------------------------------------------------------
+    /// 機能取得
+    rpc GetFunctions (REGetFunctionsRequest) returns (REGetFunctionsResponse);
+
+    /// 機能登録
+    rpc SaveFunction (RESaveFunctionRequest) returns (google.protobuf.Empty);
+
+    /// ロール取得
+    rpc GetRoles (REGetRolesRequest) returns (REGetRolesResponse);
+
+    /// ロール登録
+    rpc SaveRoles (RESaveRolesRequest) returns (google.protobuf.Empty);
+
+    /// 事業所登録
+    rpc SaveOfficeFunction (RESaveOfficeFunctionRequest) returns (google.protobuf.Empty);
+
+    /// 事業所削除
+    rpc DeleteOfficeFunction (REDeleteOfficeFunctionRequest) returns (google.protobuf.Empty);
+    //------------------------------------------------------
+
+    rpc getListRoleCode (REGetListRoleCodeRequest) returns (REGetListRoleCodeResponse);
+
+    rpc getListOfficeUserIdsByOfficeIds (REGetListOfficeRequest) returns (REGetListOfficeUserIdsByOfficeIdsResponse);
+
+    rpc listHandlingHospitalsNowAndPast (REListHandlingHospitalsNowAndPastRequest) returns (REListHandlingHospitalsNowAndPastResponse);
+
+    // Remove MR adopted drugs when remove company adopted drugs
+    rpc removeMrAdoptedDrugs (RERemoveMrAdoptedDrugsRequest) returns (google.protobuf.Empty);
+
+    // Get all Office by keyword
+    rpc ListOfficeByKeyword (REListOfficeByKeywordRequest) returns (REListOfficeByListOfficeIdResponse);
+
+    // Count number user is PROVISIONAL (of Mr) and VALID (have status = 2) by list officeUserId
+    rpc CountUserIsProvisionalAndValid (REListUserByOfficeUserIdRequest) returns (RECountUserByListOfficeUserIdResponse);
+
+    // Get all MR is linked to the user 's hospital that is logged in
+    rpc GetAllMRLinkedUserLoggedInByOfficeUserIds (REGetUserByOfficeUserIdRequest) returns (REListUserByOfficeUserIdResponse);
+
+    // Check handling hospital
+    rpc checkHandlingHospital (RECheckHandlingHospitalRequest) returns (RECheckHandlingHospitalResponse);
+
+    // Check handling hospital for list group
+    rpc checkHandlingHospitalForListGroup (RECheckHandlingHospitalForListGroupRequest) returns (RECheckHandlingHospitalForListGroupResponse);
+
+    rpc GetStaffRequestByManagerId (REGetStaffRequestByManagerIdRequest) returns (REGetStaffRequestByManagerIdResponse);
+
+    rpc GetListUserNameByListOfficeUserId (REGetListUserNameByListUserIdRequest) returns (REGetListUserNameByListUserIdResponse);
+
+    rpc GetListDepartmentIdByOfficeId (REGetListDepartmentIdByOfficeIdRequest) returns (REGetListDepartmentIdByOfficeIdResponse);
+
+    rpc GetListDepartmentChildrenById (REGetListDepartmentChildrenByIdRequest) returns (REGetListDepartmentChildrenByIdRequestResponse);
+
+    rpc GetListDepartmentByDepartmentId (REGetListDepartmentByOfficeIdRequest) returns (REGetDepartmentResponse);
+
+    rpc GetListUserLevelLimitedByCondition (REGetListUserByConditionRequest) returns (REGetListUserByConditionResponse);
+
+    rpc GetListUserByRequestManagementAuthorityCondition (REGetListUserByRequestManagementAuthorityConditionRequest) returns (REGetListUserByConditionResponse);
+
+    rpc GetListManagerRequest (REGetListManagerRequestRequest) returns (REGetListManagerRequestResponse);
+
+    rpc GetStaffRequestItem (REGetStaffRequestItemRequest) returns (REGetStaffRequestItemResponse);
+
+    rpc GetListUserByOfficeId (REGetListUserByOfficeIdRequest) returns (REGetListUserByOfficeIdResponse);
+
+    rpc GetListOfficeUserByOfficeId (REListOfficeUserByOfficeIdRequest) returns (REListOfficeUserByOfficeIdResponse);
+
+    rpc GetListDepartmentByOfficeId (REGetListDepartmentByOfficeIdRequest) returns (REGetListDepartmentByOfficeIdResponse);
+
+    rpc GetListOfficeUserByCondition (REGetListOfficeUserByConditionRequest) returns (REGetListOfficeUserByConditionResponse);
+
+    rpc GetOfficeUsersByOfficeId (REGetOfficeUsersByOfficeIdRequest) returns (REGetOfficeUsersByOfficeIdResponse);
+    rpc GetOfficeNamesByOfficeUserIds (REGetOfficeNamesByOfficeUserIdsRequest) returns (REGetOfficeNamesByOfficeUserIdsResponse);
+
+    rpc getListOfficeUserIdByIndustry (REListOfficeUserIdByIndustryRequest) returns (REListOfficeUserIdByIndustryResponse);
+
+    /// Get settings of building and conference room
+    rpc getBuildingAndConferenceRoomSetting (REGetBuildingAndConferenceRoomSettingRequest) returns (REConferenceRoom);
+
+    /// get settings of buildings and conference rooms
+    rpc getBuildingsAndConferenceRoomsSetting(REGetBuildingsAndConferenceRoomsSettingRequest) returns(REGetBuildingsAndConferenceRoomsSettingResponse) ;
+
+    /// Save settings of buildings and conference rooms
+    rpc saveBuildingsAndConferenceRoomsSetting(RESaveBuildingsAndConferenceRoomsSettingRequest) returns(RESaveBuildingsAndConferenceRoomsSettingResponse) ;
+
+    rpc FindAvailableConferenceRooms(REFindAvailableConferenceRoomsRequest) returns (REFindAvailableConferenceRoomsResponse);
+
+    rpc getMROfficeUserIdByName (REGetMROfficeUserIdByNameRequest) returns (REGetMROfficeUserIdByNameResponse);
+
+    // CH0012 Get list MR in Pharmacy when first loading
+    rpc GetListMrByOfficeId (REGetListMrByOfficeIdRequest) returns (REGetListMrByOfficeIdResponse);
+
+    rpc GetUserIdListByOfficeId(REGetUserIdListByOfficeIdRequest) returns (REGetUserIdListByOfficeIdResponse);
+    // Get list office by name
+    rpc getListOfficeByName (REListOfficeByNameRequest) returns (REListOfficeByNameResponse);
+
+    // CH0012 Get all MR in Pharmacy
+    rpc GetMrOfficeUserIdsByOfficeId (REGetMrOfficeUserIdsByOfficeIdRequest) returns (REGetMrOfficeUserIdsByOfficeIdResponse);
+
+    // CR: 10930: Get Pr Offices by Dr OfficeId
+    rpc GetPrOfficesByDrOfficeId (REPrOfficesByDrOfficeIdRequest) returns (REPrOfficesByDrOfficeIdResponse);
+    //PhucLQ
+    rpc GetAddStudent (SaveStudentRequest) returns (ListStudentResponse);
+    rpc GetEditStudent (EditStudentRequest) returns (ListStudentResponse);
+    rpc GetDelStudent (DelStudentRequest) returns (google.protobuf.Empty);
+    rpc GetSortByNameStudent (google.protobuf.Empty) returns (ListStudentResponse);
+    rpc GetSortByGpaStudent (google.protobuf.Empty) returns (ListStudentResponse);
+    rpc GetShowStudent (google.protobuf.Empty) returns (ListStudentResponse);
+}
+
+/**
+* AM0034: 統計サーッビス
+*/
+service RegistrationStatistics {
+    // ユーザー情報の取得
+    rpc GetUserStatistics (admin.AMStatisticsQuery) returns (stream admin.AMUserStatistic);
+
+    // ログイン情報の取得
+    rpc GetLoginStatistics (admin.AMStatisticsQuery) returns (stream admin.AMLoginStatistic);
+
+    // 面会ユーザの情報 の取得
+    rpc GetMeetingUserStatistics (REUserRequest) returns (admin.AMMeetingStatistic);
+
+    // 面会仲介者の情報の取得
+    rpc GetMeetingMediatorStatistics (REUserRequest) returns (admin.AMMeetingStatistic);
+
+    // 面会枠の面会者の情報の取得
+    rpc GetMeetingFrameHostStatistics (REUserRequest) returns (admin.AMMeetingFrameStatistic);
+
+    // 面会枠の作成者の情報の取得
+    rpc GetMeetingFrameCreatorStatistics (REUserRequest) returns (admin.AMMeetingFrameStatistic);
+
+
+
+}
+////// Phuclq
+message StudentResponse
+{
+    string id = 1;
+    string name = 2 ;
+    int32 age = 3;
+    string address = 4;
+    float gpa = 5;
+}
+message ListStudentResponse {
+    repeated StudentResponse student =1;
+
+}
+message SaveStudentRequest {
+    string id = 1;
+    string name = 2 ;
+    int32 age = 3;
+    string address = 4;
+    float gpa = 5;
+}
+
+message EditStudentRequest
+{
+    string id = 1;
+    string name = 2 ;
+    int32 age = 3;
+    string address = 4;
+    float gpa = 5;
+}
+
+message DelStudentRequest
+{
+    string id =1;
+}
+
+message REGetListDepartmentChildrenByIdRequest {
+    string departmentId = 1;
+}
+message REGetListDepartmentChildrenByIdRequestResponse {
+    repeated string departmentId = 1;
+}
+
+message REGetListDepartmentIdByOfficeIdRequest {
+    string officeId = 1;
+}
+message REGetListDepartmentIdByOfficeIdResponse {
+    bool checkFp15ManagementLevelAll = 1;
+    repeated string departmentId = 2;
+}
+
+message REGetListUserNameByListUserIdRequest {
+    repeated string officeUserId = 1;
+    string officeId = 2;
+}
+message REGetListUserNameByListUserIdResponse {
+    map<string, REStaffItem> reUserName = 1;
+}
+
+message REGetStaffRequestByManagerIdRequest {
+    string officeId = 1;
+    repeated REGetStaffRequestByManagerIdItemRequest staffRequestByManagerIdItemRequest = 2;
+}
+message REGetStaffRequestByManagerIdItemRequest {
+    repeated string staffRequestId = 1;
+    string managerRequestId = 2;
+}
+
+message REGetStaffRequestByManagerIdResponse {
+    repeated REGetStaffRequestByManagerIdItemResponse staffRequestByManagerIdItemResponse = 1;
+}
+message REGetStaffRequestByManagerIdItemResponse {
+    string managerRequestId = 1;
+    repeated REStaffRequestItem staffRequestItem = 2;
+}
+message REStaffRequestItem {
+    string userName = 1;
+    string officeUserId = 2;
+    string departmentName = 3;
+    string jobType = 4;
+    string image = 5;
+    REManagementLevel fp15ManagementLevel = 6;
+    REFuncAuthority funcAuthority = 7;
+}
+
+message REGetListManagerRequestRequest {
+    /// Office id
+    string officeId = 1;
+    /// Department id
+    string departmentId = 2;
+    /// Job type
+    string jobType = 3;
+    /// Key word
+    string keyword = 4;
+    // page size
+    common.CMNPage page = 5;
+
+}
+
+message REGetListManagerRequestResponse {
+    repeated REManagerRequestItem managerRequestItem = 1;
+    repeated string officeUserId = 2;
+    repeated string jobType = 3;
+    int32 totalRecords = 4;
+}
+message REManagerRequestItem {
+    string officeUserId = 1;
+    string departmentId = 2;
+    string departmentName = 3;
+    string managerRequestId = 4;
+    string jobType = 5;
+    string firstName = 6;
+    string lastName = 7;
+    string firstNameKana = 8;
+    string lastNameKana = 9;
+    REManagementLevel fp15ManagementLevel = 10;
+    REFuncAuthority funcAuthority = 11;
+    string requesterOfficeUserName = 12;
+    int32 accountStatus = 13;
+}
+
+message REGetListUserByOfficeIdRequest {
+    string officeId = 1;
+    string managerRequestId = 2;
+    string keyword = 3;
+    string userNameBtn = 4;
+    common.CMNPage page = 5;
+}
+message REGetListUserByOfficeIdResponse {
+    repeated string jobType = 1;
+    repeated REStaffRequestItem staffRequestItem = 2;
+    int32 totalRecords = 3;
+}
+
+message REGetStaffRequestItemRequest {
+    string officeId = 1;
+    repeated string officeUserId = 2;
+    common.CMNPage page = 3;
+}
+message REGetStaffRequestItemResponse {
+    repeated string jobType = 1;
+    repeated REStaffRequestItem staffRequestItem = 2;
+}
+
+message REListOfficeUserByOfficeIdRequest {
+    string officeId = 1;
+    repeated string officeUserId = 2;
+}
+message REListOfficeUserByOfficeIdResponse {
+
+    repeated REOfficeUserByOfficeId user = 1;
+
+    repeated string departmentId = 2;
+    bool checkStatusUser = 3;
+
+}
+message REOfficeUserByOfficeId {
+
+    REFuncAuthority funcAuthority = 1;
+
+    REManagementLevel fp15ManagementLevel = 2;
+
+    REManagementLevel fp16ManagementLevel = 3;
+
+}
+
+message REGetListDepartmentByOfficeIdRequest {
+    repeated string departmentId = 1;
+    repeated string officeUserId = 2;
+}
+message REGetListDepartmentByOfficeIdResponse {
+    repeated REListDepartmentId listDepartmentId = 1;
+}
+message REListDepartmentId {
+    string departmentId = 1;
+    repeated string departmentIdChildren = 2;
+}
+
+message REGetListUserByRequestManagementAuthorityConditionRequest {
+    string officeId = 1;
+    string keyword = 2;
+    string departmentId = 3;
+    string jobType = 4;
+    repeated string officeUserId = 5;
+}
+
+/**
+ * パスワード変更のリクエスト.
+ */
+message REUpdatePasswordRequest {
+    string user_id = 1; /// @require User ID TODO 認証次第で変更
+    string current_password = 2; /// @require current password
+    string new_password = 3; /// @require new password
+}
+
+/**
+ * request password when change loginId
+ */
+// TODO : confirm customer flow check password of user
+message RECheckPasswordRequest {
+    string user_id = 1; /// @require User ID
+    string password = 2; /// @require current password
+}
+
+/**
+ * response password when change loginId
+ */
+// TODO : confirm customer flow check password of user
+message RECheckPasswordResponse {
+    bool isPassword = 1;
+
+}
+
+/**
+  * サイドメニュー設定
+ */
+message RESideMenuSettings {
+    repeated REMenuItem items = 1;
+}
+
+/**
+ * メニュー
+ */
+message REMenuItem {
+    /// メニュー名
+    string functionId = 1;
+    /// 表示順
+    int32 displayOrder = 2;
+}
+
+enum REPublishingType {
+    ALL = 0;
+    INSIDE = 1;
+    PRIVATE = 2;
+}
+
+/**
+ * 通知設定
+ */
+message RENotificationSettings {
+    /// 投稿があった場合(通知メール)
+    bool mailWhenNewPost = 1;
+    /// 自分が投稿した記事にコメントがあった場合(通知メール)
+    bool mailWhenMentioned = 2;
+    /// 投稿があった場合(通知メール)
+    bool mailWhenNewPostLeftUnread = 3;
+    /// 入退館システムで訪問者が訪れた場合
+    bool mailWhenVisit = 4;
+
+    /// 投稿があった場合(デスクトップ)
+    bool desktopWhenNewPost = 5;
+    /// 自分が投稿した記事にコメントがあった場合(デスクトップ)
+    bool desktopWhenMentioned = 6;
+    /// 投稿があった場合(デスクトップ)
+    bool desktopWhenNewPostLeftUnread = 7;
+    /// MR 面会リクエストについての連絡があった時 || DR リクエストが届いた場合
+    bool mailWhenRequestReceived = 8;
+
+    // PharmacyNet: mail when new TracingReport, PrescriptionUpdateReport
+    bool mailWhenPharmacyNewReport = 9;
+    // PharmacyNet: mail when new comment in TracingReport, PrescriptionUpdateReport
+    bool mailWhenPharmacyNewComment = 10;
+    // PharmacyNet: desktop notification when new TracingReport, PrescriptionUpdateReport
+    bool desktopWhenPharmacyNewReport = 11;
+    // PharmacyNet: desktop notification when new comment in TracingReport, PrescriptionUpdateReport
+    bool desktopWhenPharmacyNewComment = 12;
+
+    // Web Meeting: desktop notification when having a call
+    bool desktopWhenWebMeetingCalled = 13;
+
+    // Mail when drJoy send #12347
+    bool mailWhenDrJoySend = 14;
+    // Mail when change presentation request status
+    bool mailWhenChangedPresentationRequestStatus = 15;
+}
+
+/**
+ * 所属
+ */
+message REDepartment {
+    /// 所属
+    string id = 1;
+    /// 所属名
+    string name = 2;
+    /// 表示名
+    string displayName = 3;
+    /// 子階層
+    repeated REDepartment children = 4;
+    /// path Department
+    string path = 5;
+}
+
+/**
+ * 所属一覧レスポンス
+ */
+message REGetDepartmentResponse {
+    repeated REDepartment department = 1;
+}
+
+/**
+ * 所属一覧更新リクエスト
+ */
+message REPutDepartmentRequest {
+    repeated REDepartment department = 1;
+}
+
+// 事業所ユーザ
+// Plain but full properties of OfficeUser + MRUser.
+//
+// @see jp.drjoy.backend.registration.domain.model.OfficeUser
+// @see jp.drjoy.backend.registration.domain.model.MRUser
+message OfficeUserMessage {
+
+    // OfficeUser properties
+
+    /** ID */
+    string id = 1;
+    /** ユーザID */
+    string userId = 2;
+    /** 事業所ID */
+    string officeId = 3;
+    /** ログインID */
+    string loginId = 4;
+    /**
+     * メールアドレス
+     * @see User#mailAddress
+     */
+    string mailAddress = 5;
+    /**
+     * 仮パスワード
+     * @see User#temporaryPassword
+     */
+    string temporaryPassword = 6;
+    /** 追加メールアドレス */
+    repeated string additionalMailAddresses = 7;
+    /** 事業所区分 */
+    REOfficeType officeType = 8;
+    /** 所属ID */
+    string departmentId = 9;
+    /** 名 */
+    string firstName = 10;
+    /** 姓 */
+    string lastName = 11;
+    /** 名(かな) */
+    string firstNameKana = 12;
+    /** 姓(かな) */
+    string lastNameKana = 13;
+    /** 生年月日 */
+    google.protobuf.Timestamp birthDate = 14;
+    /** アカウントステータス */
+    int32 accountStatuses = 15;
+    /** 管理権限 */
+    REManagementAuthority managementAuthority = 16;
+    /** 機能権限 */
+    REFuncAuthoritySet funcAuthority = 17;
+    /** 面会状況管理範囲 */
+    REManagementLevel fp3ManagementLevel = 18;
+    /** 連絡先 */
+    REContact contact = 19;
+    /** ユーザプロフィール */
+    REProfile profile = 20;
+    /** 職業区分 */
+    string jobType = 21;
+    /** 診療科 */
+    repeated RESpecializedDepartment specializedDepartments = 22;
+    /** 設定情報 */
+    RESettings settings = 23;
+    /** Path? */
+    string path = 24;
+
+    // MRUser properties
+
+    /**
+     * 営業所情報
+     * (ユーザ間で共有されない)
+     */
+    REBranch branch = 50;
+    /** 専門領域 */
+    repeated string handleFields = 51;
+    /** 経験年数 */
+    int32 experience = 52;
+    /** 薬学部卒業 */
+    bool graduatedPharmacy = 53;
+    /** 担当事業所リスト */
+    repeated REHandlingHospital handleOffices = 54;
+    /** 担当薬 */
+    repeated string handleDrugs = 55;
+    /** 名札印刷フラグ */
+    bool printedNameTag = 56;
+    /** 本人確認情報 */
+    REIdentification identification = 57;
+    /** attendance management level*/
+    REManagementLevel fp12ManagementLevel = 58;
+}
+
+message REOfficeIdAndUserIdRequest {
+    string name = 1;
+}
+
+//RP0001
+message REListOfficeIdAndUserIdResponse {
+    /** ユーザID */
+    repeated string officeId = 1;
+    /** _id */
+    repeated string userId = 2;
+}
+
+message ListOfficeUsersRequest {
+    // 事業所ID
+    string officeId = 1;
+    // 所属ID
+    string departmentId = 2;
+    // 検索文字列
+    string keyword = 3;
+    // ソート条件
+    common.CMNSort sort = 4;
+    // ページ
+    common.CMNPage page = 5;
+    // DBRefを省略する
+    bool omitDBRefs = 6;
+}
+
+message ListOfficeUsersResponse {
+    repeated OfficeUserMessage officeUsers = 1;
+}
+
+message GetOfficeUserRequest {
+    string id = 1;
+    // DBRefを省略する
+    bool omitDBRefs = 2;
+}
+
+// コンタクト情報
+//
+// @see jp.drjoy.backend.registration.domain.model.Contact
+message REContact {
+    /** ID */
+    string id = 1;
+    /** 郵便番号 */
+    string postalCode = 2;
+    /** 都道府県コード */
+    string prefectureCode = 3;
+    /** 住所1 */
+    string address1 = 4;
+    /** 住所2 */
+    string address2 = 5;
+    /** 電話番号 */
+    string phoneNo = 6;
+    /** FAX番号 */
+    string faxNo = 7;
+    /** メールアドレス */
+    string mailAddress = 8;
+    /** 携帯番号 */
+    string mobileNo = 9;
+    /** PHS番号 */
+    string phsNo = 10;
+    /** ホームページURL */
+    string homepageUrl = 11;
+    /** メールアドレス公開範囲 */
+    REPublishingType mailAddressPublishingType = 12;
+    /** 携帯番号公開範囲 */
+    REPublishingType mobileNoPublishingType = 13;
+}
+
+// プロフィール情報
+//
+// @see jp.drjoy.backend.registration.domain.model.Profile
+message REProfile {
+    /** ID */
+    string id = 1;
+    /** 性別 */
+    REGender genderType = 2;
+    /** プロフィール画像 */
+    string image = 3;
+    /** 趣味 */
+    string hobby = 4;
+    /** 出身地 */
+    string placeBornIn = 5;
+    /** 卒業年度 */
+    google.protobuf.Timestamp graduationDate = 6;
+    /** 就業開始日 */
+    google.protobuf.Timestamp hiredDate = 7;
+    /** 略歴 */
+    string briefHistory = 8;
+    /** 学会・資格等 */
+    string qualification = 9;
+    /** 役職・役割 */
+    string position = 10;
+    /** 自己PR */
+    string message = 11;
+    /** 役職フラグ */
+    bool executiveFlag = 12;
+}
+
+// セッティング情報
+//
+// @see jp.drjoy.backend.registration.domain.model.Settings
+message RESettings {
+    /** ID */
+    string id = 1;
+    /** サイドメニュー設定 */
+    RESideMenuSettings sideMenuSettings = 2;
+    /** 通知設定 */
+    RENotificationSettings notificationSettings = 3;
+    /** 面会設定 */
+    REMeetingConfigure meetingConfigure = 4;
+}
+
+// Beacapp情報
+//
+// @see jp.drjoy.backend.registration.domain.model.BeacappConfig
+message REBeacappConfig {
+    /** ID */
+    string id = 1;
+    /** サブスクリプションID */
+    string subscriptionId = 2;
+    /** オフィスコード */
+    string officeCode = 3;
+    /** APIキー */
+    string apiKey = 4;
+    /** 管理者ID */
+    string adminId = 5;
+    /** 有効かどうか */
+    bool isBlocked = 6;
+}
+
+// 担当病院
+//
+// @see jp.drjoy.backend.registration.domain.model.HandlingHospital
+message REHandlingHospital {
+    string id = 1;
+    /** 担当事業所ID */
+    string officeId = 2;
+    /** 担当事業所名 */
+    string officeName = 3;
+    /** 事業所ユーザID @see MRUser#id */
+    string userId = 4;
+    /** mrOfficeId */
+    string mrOfficeId = 5;
+    /** その他の担当病院判定フラグ */
+    bool otherHospital = 6;
+    /** 担当開始日 */
+    google.protobuf.Timestamp start = 7;
+    /** 本人確認ステータス */
+    REIdentifyStatus identifyStatus = 8;
+    /** 面会リクエスト送信制限 */
+    REMeetingRestriction restriction = 9;
+    /** 制限日 */
+    google.protobuf.Timestamp restricted = 10;
+    /** 操作人の事業所ユーザID */
+    string operator = 11;
+}
+
+// 利用登録済みの事業所
+// Dr.JOY/Pr.JOY共通
+//
+// @see jp.drjoy.backend.registration.domain.model.Office
+// @see jp.drjoy.backend.registration.domain.model.MedicalOffice
+// @see jp.drjoy.backend.registration.domain.model.PharmacyOffice
+message OfficeMessage {
+    // オフィスID
+    // - 医療機関でない場合: 業者マスタID, 医療機関の場合: 医療機関マスタID
+    string id = 1;
+    // 事業所ID
+    // - 旧システムのoffices.idから移行する
+    string oldId = 2;
+    // オフィス名称
+    string name = 3;
+    // オフィス名称（カナ）
+    string nameKana = 4;
+    // オフィス名称（イニシャル）
+    string nameInitial = 5;
+    // 事業所区分
+    REOfficeType officeType = 6;
+    // 連絡先
+    REContact contact = 7;
+    // 会社からのメッセージ
+    string message = 8;
+    // カバー写真
+    string coverImage = 9;
+    // 組織構造
+    repeated REDepartment departments = 10;
+    // 作成日時
+    google.protobuf.Timestamp created = 11;
+    // 削除日時
+    google.protobuf.Timestamp deleted = 12;
+    // 作成者
+    string creator = 13;
+    // 更新者
+    string updater = 14;
+    // オフィス名称（略称）
+    string nameAbbreviation = 15;
+
+    // MedicalOffice properties
+
+    // キーコード
+    string keyCode = 50;
+    // 制限付きキーコード
+    string restrictedKeyCode = 51;
+    // 診療時間
+    string consultationHour = 52;
+    // 招待可否フラグ
+    // - trueの場合はMRユーザを招待可能、falseの場合は不可
+    bool allowInvite = 53;
+    // Beacapp関連情報
+    REBeacappConfig beacappConfig = 54;
+    // PharmacyOffice properties
+}
+
+message ListOfficesRequest {
+    bool detail = 1;
+}
+
+message ListOfficesResponse {
+    repeated OfficeMessage offices = 1;
+}
+
+message GetOfficeRequest {
+    string id = 1;
+    bool detail = 2;
+}
+
+/**
+ * ユーザ一覧取得リクエスト
+ */
+message REListUsersRequest {
+
+    enum REGroup {
+        /// 院内
+        INSIDE = 0;
+        /// 院外
+        OUTSIDE = 1;
+    }
+
+    /// 所属ID
+    string departmentId = 1;
+    /// 検索文字列
+    string name = 2;
+    /// グループ
+    REGroup group = 3;
+    /// ソート条件
+    common.CMNSort sort = 4;
+    /// ページ
+    common.CMNPage page = 5;
+
+    string addition_condition = 6;
+    /// アカウントステータス
+    // accountStatuses = 0: Search all account
+    // accountStatuses = 1: Search Provisional account
+    // accountStatuses = 2: Search Valid account
+    int32 accountStatuses = 7;
+}
+
+/**
+ * ユーザ一覧取得レスポンス
+ */
+message REListUsersResponse {
+    int32 page = 1;
+    repeated REUserItem user = 2;
+}
+
+/**
+ * ユーザ情報(一覧用)
+ */
+message REUserItem {
+    /// ログインID
+    string loginId = 1;
+    /// ユーザID
+    string userId = 2;
+    // officeUserId
+    string officeUserId = 3;
+    /// 名
+    string firstName = 4;
+    /// 姓
+    string lastName = 5;
+    /// 名(かな)
+    string firstNameKana = 6;
+    /// 姓(かな)
+    string lastNameKana = 7;
+    /// 職業
+    string jobType = 8;
+    /// 所属
+    REDepartment department = 9;
+    /// 管理権限
+    REManagementAuthority managementAuthority = 10;
+    /// 機能権限セット
+    REFuncAuthoritySet funcAuthoritySet = 11;
+    /// 機能権限
+    REFuncAuthority funcAuthority = 12;
+    /// 面会状況管理範囲
+    REManagementLevel fp3managementLevel = 13;
+    /// メールアドレス
+    string mailAddress = 14;
+    /// 携帯番号
+    string mobileNo = 15;
+    /// PHS番号
+    string phsNo = 16;
+    /// アカウントステータス
+    int32 accountStatuses = 17;
+    /// イメージ
+    string image = 18;
+    /// 事業所ID
+    string officeId = 19;
+    /// 事業所名
+    string officeName = 20;
+    /// 性別
+    REGender gender = 21;
+    /// 経験年数
+    string experiences = 22;
+    /// 診療科
+    repeated RESpecializedDepartment specializedDepartment = 23;
+    /// 趣味
+    string hobby = 24;
+    /// 出身
+    string placeBornIn = 25;
+    /// 略歴
+    string briefHistory = 26;
+    /// 学会・資格等
+    string qualification = 27;
+    /// 役職・役割
+    string position = 28;
+    /// -----------------------------------------------------
+    /// FIXME: 対応完了後削除
+    /// アカウントステータス
+    REAccountStatus accountStatus = 29;
+    /// スタッフ権限
+    REStaffAuthoritySet stuffAuthority = 30;
+    /// その他の権限
+    REOtherAuthoritySet otherAuthority = 31;
+    /// job name
+    string jobName = 32;
+    /// -----------------------------------------------------
+    //attendance management level
+    REManagementLevel fp12managementLevel = 33;
+    /// web meeting flag
+    bool webMeeting = 34;
+}
+
+/**
+ * ユーザ情報取得リクエスト
+ */
+message REGetUserRequest {
+    /// ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+
+    /// for reception api
+    /// ログインID
+    string loginId = 3;
+    /// パスワード
+    string password = 4;
+}
+
+message REGetUserByOfficeUserIdRequest {
+    /// ユーザID
+    string officeUserId = 1;
+
+}
+
+message REGetUserByOfficeUserIdOrUserIdRequest {
+    /// ユーザID
+    string officeUserId = 1;
+    string userId = 2;
+}
+
+/**
+ * 診療科
+ */
+message RESpecializedDepartment {
+    /// 診療科領域ID
+    string fieldId = 1;
+    /// name_field
+    string name_field = 2;
+    /// 診療科ID
+    string typeId = 3;
+    /// name type
+    string name_type = 4;
+}
+
+// --------------------------------------------------------------
+// FIXME: 対応完了後削除
+enum REStaffAuthoritySet {
+    SPS_0 = 0;
+    SPS_1 = 1;
+    SPS_2 = 2;
+    SPS_3 = 3;
+}
+
+enum REOtherAuthoritySet {
+    OPS_0 = 0;
+    OPS_1 = 1;
+    OPS_2 = 2;
+    OPS_3 = 3;
+    OPS_4 = 4;
+}
+
+message REStaffAuthority {
+    bool SP_1 = 1;
+    bool SP_2 = 2;
+    bool SP_3 = 3;
+    bool SP_4 = 4;
+}
+
+message REOtherAuthority {
+    bool OP_1 = 1;
+    bool OP_2 = 2;
+    bool OP_3 = 3;
+    bool OP_4 = 4;
+    bool OP_5 = 5;
+    bool OP_6 = 6;
+    bool OP_7 = 7;
+    bool OP_8 = 8;
+    bool OP_9 = 9;
+}
+// --------------------------------------------------------------
+
+/**
+ * 機能権限
+ */
+message REFuncAuthority {
+    /// 面会/説明会権限
+    bool FP_1 = 1;
+    /// 面会ルール管理権限
+    bool FP_2 = 2;
+    /// 面会状況管理権限
+    bool FP_3 = 3;
+    /// 説明会状況管理権限
+    bool FP_4 = 4;
+    /// 取引先一覧ダウンロード権限
+    bool FP_5 = 5;
+    /// 取引先への一斉配信権限
+    bool FP_6 = 6;
+    /// 仲介権限
+    bool FP_7 = 7;
+    /// 薬薬連携管理者
+    bool FP_8 = 8;
+    /// 薬薬連携利用者
+    bool FP_9 = 9;
+    /// Shift
+    bool FP_10 = 10;
+    /// 資料管理権限
+    bool FP_11 = 11;
+    // Attendance FP
+    bool FP_12 = 12;
+    /// 事前メッセージ送信権限
+    bool FP_13 = 13;
+    /// 情報提供先設定権限
+    bool FP_14 = 14;
+
+    bool FP_15 = 15;
+
+    bool FP_16 = 16;
+}
+
+/**
+ * 管理権限
+ */
+enum REManagementAuthority {
+    /// 全体管理者
+    MP_1 = 0;
+    /// 所属管理者
+    MP_2 = 1;
+    /// なし
+    MP_3 = 2;
+}
+
+/**
+ * 機能権限セット
+ */
+enum REFuncAuthoritySet {
+    /// カスタム
+    FPS_0 = 0;
+    /// 面会/説明会管理者
+    FPS_1 = 1;
+    /// 仲介者
+    FPS_2 = 2;
+    /// 面会／説明会スタッフ
+    FPS_3 = 3;
+    /// なし
+    FPS_4 = 4;
+    /// eMR
+    FPS_6 = 6;
+}
+
+/**
+ * 管理範囲
+ */
+enum REManagementLevel {
+    All = 0;
+    Limited = 1;
+}
+
+/**
+ * アカウントステータス
+ */
+enum REAccountStatus {
+    /// 仮登録
+    PROVISIONAL = 0;
+    /// 有効
+    VALID = 1;
+    /// ロック中
+    LOCKING = 2;
+    /// 無効
+    INVALID = 3;
+}
+
+/**
+ * 性別
+ */
+enum REGender {
+    /// 男性
+    MALE = 0;
+    /// 女性
+    FEMALE = 1;
+    /// 未設定
+    UNKNOWN = 2;
+}
+
+/**
+ * ユーザ情報
+ */
+message REUser {
+
+    /// ログインID
+    string loginId = 1;
+    /// 新規ログインID
+    string newLoginId = 2;
+    /// 名
+    string firstName = 3;
+    /// 姓
+    string lastName = 4;
+    /// 名(かな)
+    string firtNameKana = 5;
+    /// 姓(かな)
+    string lastNameKana = 6;
+    /// 職業
+    string jobType = 7;
+    /// メールアドレス
+    string mailAddress = 8;
+    // 追加メールアドレス
+    repeated string additionalMailAddress = 9;
+    /// パスワード
+    string password = 10;
+    /// 性別
+    REGender gender = 11;
+    /// 誕生日
+    string birthDate = 12;
+    /// 診療科
+    repeated RESpecializedDepartment specializedDepartment = 13;
+    /// 顔写真URL
+    string imageUrl = 14;
+    /// アカウントステータス
+    int32 accountStatuses = 15;
+    /// 所属
+    REDepartment department = 16;
+    /// 卒業年度
+    string graduationDate = 17;
+    /// 携帯番号
+    string mobileNo = 18;
+    /// 公開範囲
+    REPublishingType mobileNoPublishingType = 19;
+    /// PHS番号
+    string phsNo = 20;
+    /// プロフィール画像
+    string profileImageUrl = 21;
+    /// 趣味
+    string hobby = 22;
+    /// 出身
+    string placeBornIn = 23;
+    /// 略歴
+    string briefHistory = 24;
+    /// 学会・資格等
+    string qualification = 25;
+    /// 役職・役割
+    string position = 26;
+    /// メールアドレス公開範囲
+    REPublishingType mailAddressPublishingType = 27;
+    /// 管理権限
+    REManagementAuthority managementAuthority = 28;
+    /// 機能権限セット
+    REFuncAuthoritySet funcAuthoritySet = 29;
+    /// 機能権限
+    REFuncAuthority funcAuthority = 30;
+    /// 面会状況管理範囲
+    REManagementLevel fp3managementLevel = 31;
+
+    // --------------------------------------------------------
+    // FIXME: 対応完了後削除
+    /// アカウントステータス
+    REAccountStatus accountStatus = 32;
+    /// スタッフ権限セット
+    REStaffAuthoritySet staffAuthoritySet = 33;
+    /// スタッフ権限
+    REStaffAuthority staffAuthority = 34;
+    /// スタッフ権限セット
+    REOtherAuthoritySet otherAuthoritySet = 35;
+    /// スタッフ権限
+    REOtherAuthority otherAuthority = 36;
+
+    ///officeUserId
+    string officeUserId = 37;
+    /// job name
+    string jobName = 38;
+    /// officeId
+    string officeId = 39;
+    /// officeName
+    string officeName = 40;
+
+    /// 事業所タイプ
+    REOfficeType officeType = 41;
+
+    /// handling hospital
+    repeated REHandlingHospital handling_hospitals = 42;
+
+    // flag personal verification
+    bool verificationFlag = 43;
+    //flag personal
+    bool personalFlag = 44;
+    // personal verification flag
+    string verificationStatus = 45;
+    // areaType list
+    repeated REAreaTypeItem areaTypeList = 46;
+    // management level fp12
+    /// 面会状況管理範囲
+    REManagementLevel fp12ManagementLevel = 47;
+
+    // web meeting flag
+    bool webMeeting = 48;
+
+    REManagementLevel fp15ManagementLevel = 49;
+
+    // userId
+    string userId = 50;
+    // pin
+    bool pin = 51;
+
+    // prefectureName
+    string prefectureName = 52;
+
+    bool hiddenRequiresResponse = 53;
+
+    // experience
+    int32 experience = 54;
+
+    // handleFields
+    repeated string handleFields = 55;
+
+    REBranch branch = 56;
+
+}
+
+
+message REDocument {
+    string firstImage = 1;
+    string lastImage = 2;
+    string date = 3;
+
+}
+
+/**
+ * アカウント解除リクエスト
+ */
+message REUnlockUserRequest {
+    /// ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+}
+
+/**
+ * アカウントロックリクエスト
+ */
+message RELockUserRequest {
+    /// ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+}
+
+message REUnlockMRUserRequest {
+    // mr officeUserId
+    string officeUserId = 1;
+
+    string loginOfficeUserId = 2;
+    string loginUserId = 3;
+    string loginOfficeId = 4;
+}
+
+message RELockMRUserRequest {
+    // mr officeUserId
+    string officeUserId = 1;
+
+    string loginOfficeUserId = 2;
+    string loginUserId = 3;
+    string loginOfficeId = 4;
+}
+
+/**
+ * アカウントロックリクエスト
+ */
+message REDeleteUserRequest {
+    /// ユーザID
+    string userId = 1;
+}
+
+/**
+ * Delete list user request
+ */
+message REDeleteListUserRequest {
+    repeated string userIds = 1;
+}
+
+/**
+ * 通知メールアドレス変更予約情報取得リクエスト
+ */
+message REGetMailAddressChangeReservationRequest {
+    string reservationToken = 1;
+}
+
+enum REReservationStatus {
+    DONE = 0;
+    ACCEPTED = 1;
+    REGISTERED = 2;
+    EXIPIED = 3;
+    ERROR = 4;
+}
+
+/**
+ * 通知メールアドレス変更予約情報取得レスポンス
+ */
+message REGetMailAddressChangeReservationResponse {
+    string reservationId = 1;
+    string oldMailAddress = 2;
+    string newMailAddress = 3;
+    REReservationStatus reservaationStatus = 4;
+}
+
+/**
+ * 通知メールアドレス変更リクエスト
+ */
+message REUpdateMailAddressRequest {
+    string reservationId = 1;
+    string reservationToken = 2;
+    string password = 3;
+}
+
+/**
+ * 追加メールアドレス変更予約情報取得リクエスト
+ */
+message REGetAdditionalMailAddressChangeReservationRequest {
+    string reservationToken = 1;
+}
+
+/**
+ * 追加メールアドレス変更予約情報取得レスポンス
+ */
+message REGetAdditionalMailAddressChangeReservationResponse {
+    string reservationId = 1;
+    string oldMailAddress = 2;
+    string newMailAddress = 3;
+    REReservationStatus reservaationStatus = 4;
+}
+
+/**
+ * 追加メールアドレス変更リクエスト
+ */
+message REUpdateAdditionalMailAddressRequest {
+    string reservationId = 1;
+    string reservationToken = 2;
+    string password = 3;
+}
+
+/**
+ * キーコード登録リクエスト
+ */
+message RERegisterKeyCodeRequest {
+    string mailAddress = 1;
+    string keycode = 2;
+}
+
+/**
+ * ユーザーセッション情報レスポンス.
+ */
+message REUserSessionResponse {
+    /// ユーザーID
+    string userId = 1;
+    /// オフィスユーザーID
+    string officeUserId = 2;
+    /// オフィスID
+    string officeId = 3;
+    /// オフィス名
+    string officeName = 4;
+    /// オフィスタイプ
+    string officeType = 5;
+    /// 所属ID
+    string deptId = 6;
+    /// 所属名
+    string deptName = 7;
+    /// 名
+    string firstName = 8;
+    /// 性
+    string lastName = 9;
+    /// 名かな
+    string firstNameKana = 10;
+    /// 性かな
+    string lastNameKana = 11;
+    /// メールアドレス
+    string mailAddress = 12;
+    /// アカウントステータス
+    int32 accountStatuses = 14;
+    /// 管理権限
+    REManagementAuthority managementAuthority = 15;
+    /// 機能権限セット
+    REFuncAuthoritySet funcAuthoritySet = 16;
+    /// 機能権限
+    REFuncAuthority funcAuthority = 17;
+    /// 面会状況管理範囲
+    REManagementLevel managementLevel = 18;
+    /// Check update identify document
+    bool isIdentifyStatus = 19;
+    /// personal verification flag
+    bool verificationFlag = 20;
+    /// personal verification status
+    string verificationStatus = 21;
+    /// personal Flag
+    bool personalFlag = 22;
+    /// path department
+    string deptPath = 23;
+    // management level fp12
+    REManagementLevel fp12ManagementLevel = 24;
+    /// ロールコード
+    repeated string roleCodes = 25;
+
+    REManagementLevel fp15ManagementLevel = 26;
+
+    bool attendanceFeatureEnabled = 27;
+
+}
+
+/**
+ * 登録情報取得処理リクエスト
+ */
+message REGetUserEntryRequest {
+    /// 登録トークン
+    string entryToken = 1;
+}
+
+/**
+ * 登録情報取得処理レスポンス
+ */
+message REGetUseEntryResponse {
+    /// 登録トークン
+    string entryToken = 1;
+    /// 医療機関ID
+    string medicalOfficeId = 2;
+    /// 医療機関名
+    string medicalOfficeName = 3;
+    /// 招待元事業者ID
+    string inviteesOfficeId = 4;
+    ///制限付きキーコード
+    bool isRestrictedKeyCode = 5;
+    /// inviteesOfficeName
+    string inviteesOfficeName = 6;
+}
+
+/// ユーザ登録リクエスト
+message RECreateUserRequest {
+    /// 医療機関ID
+    string medicalOfficeId = 1;
+    /// 会社名
+    string officeName = 2;
+    /// 都道府県コード
+    string prefectureCode = 3;
+    /// 営業所住所
+    string branchAddress = 5;
+    /// 所属
+    string branchDepartment = 6;
+    /// 営業所電話番号
+    string branchPhoneNo = 7;
+    /// 携帯番号
+    string mobileNo = 8;
+    /// 業種
+    string industryType = 9;
+    /// 名
+    string firstName = 10;
+    /// 姓
+    string lastName = 11;
+    /// 名(かな)
+    string firtNameKana = 12;
+    /// 姓(かな)
+    string lastNameKana = 13;
+    /// 性別
+    REGender gender = 14;
+    /// 誕生日
+    string birthDate = 15;
+    /// メールアドレス
+    string mailAddress = 16;
+    /// パスワード
+    string password = 17;
+    /// 経験年数
+    string experiences = 18;
+    /// 薬学部卒業
+    bool pharmacyGraduation = 19;
+    /// 専門領域
+    repeated string handleFields = 20;
+    /// 出身地
+    string placeBornIn = 21;
+    /// 趣味
+    string hobby = 22;
+    /// 自己PR
+    string message = 23;
+    /// 顔写真URL
+    string imageUrl = 24;
+    /// 名刺画像更新日時
+    string IdentificationUpdated = 25;
+    /// 名刺画像ファイル名
+    string IdentificationFileName = 26;
+    /// 名刺画像画像URL
+    string IdentificationImageUrl = 27;
+    /// 製薬企業事業所ID
+    string pharmacyOfficeId = 28;
+    /// 制限付きキーコード
+    bool isRestrictedKeyCode = 29;
+    /// 登録トークン
+    string entryToken = 30;
+
+    bytes bytesImage = 31;
+
+    bytes bytesIdentificationImage = 32;
+
+    /// 職業
+    string jobType = 33;
+}
+
+message RECreateUserResponse {
+    string officeId = 1;
+
+    string officeUserId = 2;
+}
+
+message REListStaffsRequest {
+    string keyword = 1;
+    /// ソート条件
+    common.CMNSort sort = 2;
+}
+
+message REListStaffsResponse {
+    int32 Page = 1;
+    repeated REStaffItem staffList = 2;
+}
+
+message REStaffItem {
+    string lastName = 1;
+    string firtName = 2;
+    string lastNameKana = 3;
+    string firstNameKana = 4;
+    string branchName = 5;
+    string department = 6;
+}
+
+message REMedicalOffice {
+    string officeId = 1;
+    string officeName = 2;
+    bool otherHandling = 3;
+    /// 事業所ユーザID
+    string userId = 4;
+    // restriction
+    REMeetingRestriction restriction = 5;
+    // office name kana
+    string officeNameKana = 6;
+    // number phone of medicalOffice
+    string phoneNumber = 7;
+    /// name abbreviation
+    string nameAbbreviation = 8;
+}
+
+message REListHandlingHospitalsResponse {
+    repeated REMedicalOffice handlingHostpitals = 1;
+}
+
+message RECreateHandlingHospitalsRequest {
+    string entryToken = 1;
+    string keyCode = 2;
+    string medicalOfficeId = 3;
+    string officeName = 4;
+}
+
+message REDeleteHandlingHospitalsRequest {
+    string officeId = 1;
+}
+
+message REInvitePrUsersRequest {
+    string officeId = 1;
+    repeated string mailAddresses = 2;
+}
+
+message REInvitePrUsersResponse {
+    // エラーメールアドレス一覧
+    repeated string errorList = 1;
+
+    repeated string successList = 2;
+}
+
+message REInviteUsersRequest {
+
+    /// 姓
+    string lastName = 1;
+    /// 名
+    string firstName = 2;
+    /// 姓(かな)
+    string lastNameKana = 3;
+    /// 名(かな)
+    string firstNameKana = 4;
+    /// 所属
+    REDepartment department = 5;
+    /// 職業
+    string jobType = 6;
+    /// メールアドレス
+    string mailAddress = 7;
+    /// 管理権限
+    REManagementAuthority managementAuthoriry = 8;
+    /// 機能権限セット
+    REFuncAuthoritySet funcAuthoritySet = 9;
+
+    // -------------------------------------------------
+    // FIXME 対応完了後削除
+    /// スタッフ権限
+    REStaffAuthority staffAuthority = 10;
+    /// その他の権限
+    REOtherAuthority otherAuthority = 11;
+    // -------------------------------------------------
+}
+
+message REInviteUsersListRequest {
+
+    repeated REInviteUsersRequest item = 1;
+
+}
+
+message REInviteUsersResponse {
+    /// キューID
+    string queueId = 1;
+}
+
+enum RESendMailType {
+    /// 仮登録メール
+    PROVISIONAL_REGISTRATION = 0;
+    /// 招待メール
+    INVITATION = 1;
+}
+
+message RESendMailRequest {
+    RESendMailType mailType = 1;
+    repeated string mailAddresses = 2;
+    string title = 3;
+    string content = 4;
+}
+
+message RESendMailResponse {
+    string queueId = 1;
+}
+
+message REListProvisionalUsersRequest {
+    /// ソート条件
+    common.CMNSort sort = 1;
+    /// ページ
+    common.CMNPage page = 2;
+    /// 所属
+    string departmentId = 3;
+    /// キーワード
+    string keyword = 4;
+}
+
+message REStaff {
+    /// 姓
+    string lastName = 1;
+    /// 名
+    string firstName = 2;
+    /// 姓(かな)
+    string lastNameKana = 3;
+    /// 名(かな)
+    string firstNameKana = 4;
+    /// 所属
+    REDepartment department = 5;
+    /// 職業
+    string jobType = 6;
+    /// ログインID
+    string loginId = 7;
+    /// 仮パスワード
+    string temporaryPassword = 8;
+    /// job name
+    string jobName = 9;
+}
+
+message REListProvisionalUsersResponse {
+    int32 page = 1;
+    repeated REStaff staffList = 2;
+}
+
+message REDownloadProvisionalUsersResponse {
+    string pathDownload = 1;
+}
+
+/**
+ * ユーザ情報取得リクエスト
+ */
+message REGetPrUserRequest {
+    /// ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+}
+
+message REGetPrUserByOfficeUserIdOrUserIdRequest {
+    string officeUserId = 1;
+    string userId = 2;
+}
+
+message REListPrUserByIdsRequest {
+    /// ユーザID
+    repeated string ids = 1;
+}
+
+/**
+ * Prユーザ情報
+ */
+message REPrUser {
+    /// 事業所ID
+    string officeId = 1;
+    /// ログインID
+    string loginId = 2;
+    /// 新規ログインID
+    string newLoginId = 3;
+    /// 名
+    string firstName = 4;
+    /// 姓
+    string lastName = 5;
+    /// 名(かな)
+    string firtNameKana = 6;
+    /// 姓(かな)
+    string lastNameKana = 7;
+    /// メールアドレス
+    string mailAddress = 8;
+    // 追加メールアドレス
+    repeated string additionalMailAddress = 9;
+    /// 性別
+    REGender gender = 11;
+    /// 誕生日
+    string birthDate = 12;
+    /// 営業所
+    REBranch branch = 13;
+    /// 経験年数
+    int32 experiences = 14;
+    /// 薬学部卒業
+    bool graduatedPharmacy = 15;
+    /// 専門領域
+    repeated string handleFields = 16;
+    /// 顔写真URL
+    string imageUrl = 17;
+    /// プロフィール画像
+    string profileImageUrl = 18;
+    /// 本人確認情報
+    REIdentification identification = 19;
+    /// 趣味
+    string hobby = 20;
+    /// 出身
+    string placeBornIn = 21;
+    /// 自己PR
+    string message = 22;
+    //office user Id
+    string officeUserId = 23;
+
+    /// 事業所タイプ
+    REOfficeType officeType = 24;
+
+    /// 職業
+    string jobType = 25;
+
+    /// アカウントステータス
+    int32 accountStatuses = 26;
+
+    // userId
+    string userId = 27;
+}
+message REListPrUser {
+    repeated REPrUser prUsers = 1;
+}
+
+message REBranch {
+    string name = 1;
+    string prefectureCode = 2;
+    string address = 3;
+    string department = 4;
+    string phoneNo = 5;
+    string mobileNo = 6;
+    string industryType = 7;
+    string industryName = 8;
+}
+
+message REIdentification {
+    string fileName = 1;
+    string imageUrl = 2;
+    string updated = 3;
+}
+
+message REListPrUsersRequest {
+    common.CMNPage page = 1;
+    common.CMNSort sort = 2;
+    string keyword = 3;
+    string officeId = 4;
+}
+
+message REListPrUsersResponse {
+    int32 page = 1;
+    repeated REPrUserItem user = 2;
+}
+
+message REPrUserItem {
+    /// ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+    /// 名
+    string firstName = 5;
+    /// 姓
+    string lastName = 6;
+    /// 名(かな)
+    string firstNameKana = 7;
+    /// 姓(かな)
+    string lastNameKana = 8;
+    /// 携帯番号
+    string mobileNo = 9;
+    /// メールアドレス
+    string mailAddress = 10;
+    /// 営業所
+    REBranch branch = 11;
+    /// 顔写真
+    string image = 12;
+    /// 事業所名
+    string officeName = 13;
+    /// 事業所タイプ
+    REOfficeType officeType = 14;
+    /// 性別
+    REGender gender = 16;
+    /// 薬学部卒業
+    bool graduatedPharmacy = 17;
+    /// 経験年数
+    string experiences = 18;
+    /// 担当領域
+    repeated HandleFieldItem handleFields = 19;
+    /// 担当病院
+    repeated REMedicalOffice handleOffices = 20;
+    /// 担当薬
+    repeated string handleDrugs = 21;
+    /// 出身地
+    string placeBornIn = 22;
+    /// 趣味
+    string hobby = 23;
+    /// officeUserId
+    string officeUserId = 24;
+    /// job type
+    string jobType = 25;
+    /// web meeting flag
+    bool webMeeting = 26;
+    /// account status
+    int32 accountStatus = 27;
+}
+
+message HandleFieldItem {
+    string handleFieldId = 1;
+    string handleFieldCode = 2;
+    string handleFieldName = 3;
+}
+
+enum REOfficeType {
+    MEDICAL = 0;
+    PHARMACY = 1;
+    DRUG_STORE = 2;
+    OTHER = 3;
+}
+
+message REListUserConnectionRequest {
+    // User id.
+    string user_id = 1;
+    /// Office id.
+    string office_id = 2;
+}
+
+message REListUserConnectionResponse {
+    /// User ID.
+    string userId = 1;
+    /// Office ID.
+    string office_id = 2;
+    /// List of `UserConnection`
+    repeated REUserConnection users = 3;
+    ///officeUserId
+    string officeUserId = 4;
+}
+
+message REUserConnection {
+    /// Connected office user id.
+    string conntected_user_id = 1;
+    /// Connected office id.
+    string connected_office_id = 2;
+    /// Connected office name.
+    string connected_office_name = 3;
+    /// First name.
+    string first_name = 4;
+    /// First name kana.
+    string first_name_kana = 5;
+    /// Last name.
+    string last_name = 6;
+    /// Last name kana.
+    string last_name_kana = 7;
+    /// User's thumbnail.
+    string image = 8;
+    /// OfficeUserId
+    string connected_office_user_id = 9;
+}
+
+enum REChannelType {
+    GROUP = 0;
+    MESSAGE = 1;
+}
+
+message REAddListUserConnectionRequest {
+    repeated REAddUserConnection connections = 1;
+}
+
+message REAddUserConnection {
+    /// Office User id.
+    string officeUserId = 1;
+    /// Connected Office user id.
+    string connectedOfficeUserId = 2;
+}
+
+/**
+ * ブロックユーザ
+ */
+message REBlockUser {
+    /// 事業所ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+    /// 事業所名
+    string officeName = 3;
+    /// 顔写真
+    string image = 4;
+    /// 姓
+    string lastName = 5;
+    /// 名
+    string firstName = 6;
+    ///officeUserId
+    string officeUserId = 7;
+    /// accountStatus
+    int32 accountStatus = 8;
+}
+
+/**
+ * ブロックユーザ一覧リクエスト
+ */
+message REListBlockUsersRequest {
+    /// User Id.
+    string user_id = 1;
+    /// Office Id.
+    string office_id = 2;
+}
+
+/**
+ * ブロックユーザ一覧レスポンス
+ */
+message REListBlockUsersResponse {
+    /// ブロックユーザ
+    repeated REBlockUser blockUsers = 1;
+}
+
+/**
+ * 担当者一覧リクエスト (ME0014)
+ */
+message REListAsigneesRequest {
+    string keyword = 1;
+    /// 事業所ID
+    string officeId = 2;
+    /// 未確認の取引先のみ
+    bool onlyUnconfirmed = 3;
+    /// 次頁トークン
+    string next = 4;
+    /// 前頁トークン
+    string prev = 5;
+    /// record of page
+    int32 limit = 6;
+    /// Sort by
+    SortBy sort_by = 12;
+
+    enum SortBy {
+        NAME = 0;
+        OFFICE = 1;
+        DATE = 2;
+    }
+
+}
+
+/**
+ * 担当者一覧レスポンス
+ */
+message REListAsigneesResponse {
+    /// total_record
+    int64 total_record = 1;
+    /// 担当一覧
+    repeated REAsignee staffs = 2;
+    /// 次頁トークン
+    string next = 3;
+    /// 前頁トークン
+    string prev = 4;
+}
+
+/**
+ * 担当者一覧リクエスト
+ */
+message REListAsigneesHistoryRequest {
+    /// 事業所ID
+    string officeName = 1;
+    /// 未確認の取引先のみ
+    bool onlyUnconfirmed = 2;
+}
+
+/**
+ * 担当者一覧レスポンス
+ */
+message REListAsigneesHistoryResponse {
+    /// 過去の担当一覧
+    repeated REAsignee histories = 1;
+}
+
+/**
+ * 本人確認ステータス
+ */
+enum REIdentifyStatus {
+    /// 未確認
+    UNCONFIRMED = 0;
+    /// 確認済
+    IDENTIFIED = 1;
+    /// 差し戻し
+    REJECTED = 2;
+}
+
+/**
+ * 面会リクエスト送信制限
+ */
+enum REMeetingRestriction {
+    /// 制限なし
+    NO_LIMIT = 0;
+    /// 取引先からリクエストを送れない
+    CUSTOMER_UNREQUESTABLE = 1;
+    /// 病院・取引業者ともにリクエストを送れない
+    ALL_UNREQUESTABLE = 2;
+}
+
+/**
+ * 担当者
+ */
+message REAsignee {
+    /// 事業所ID
+    string officeId = 1;
+    /// 事業所名
+    string officeName = 2;
+    /// 顔写真
+    string image = 3;
+    /// 名
+    string firstName = 4;
+    /// 姓
+    string lastName = 5;
+    /// 担当開始日
+    string start = 6;
+    /// 担当終了日
+    string end = 7;
+    /// ブロック状態
+    bool blocked = 8;
+    /// 名刺画像
+    string identifyFileId = 9;
+    /// 面会リクエスト送信制限
+    REMeetingRestriction restriction = 10;
+    /// 制限日
+    string restricted = 11;
+    /// 操作人の事業所ユーザID
+    string operatorId = 12;
+    /// 操作人の事業所ユーザID
+    string operatorName = 13;
+    // userId
+    string userId = 14;
+    // phoneNo
+    string phoneNo = 15;
+    /// officeUserId
+    string officeUserId = 16;
+    // account is invalid
+    bool is_invalid = 17;
+    // image url identification
+    string image_identification = 18;
+    // file name identification
+    string file_name_identification = 19;
+    /// Account status
+    int32 accountStatus = 20;
+}
+
+/**
+ * 面会設定情報取得リクエスト
+ */
+message REListMeetingConfigureRequest {
+    /// 事業所ID
+    string offieId = 1;
+    /// 所属ID
+    string departmentId = 2;
+    /// 事業所ユーザID
+    string userName = 3;
+    // control page
+    common.CMNPage pageable = 4;
+}
+
+/**
+ * 面会設定情報取得レスポンス
+ */
+message REListMeetingConfigureResponse {
+    repeated REMeetingConfigure configure = 1;
+}
+
+/**
+ * 面会設定情報
+ */
+message REMeetingConfigure {
+    /// 事業所ID
+    string officeId = 1;
+    /// 事業所ユーザID
+    string usreId = 2;
+    /// 顔写真
+    string image = 3;
+    /// 所属
+    REDepartment department = 4;
+    /// 名
+    string firstName = 5;
+    /// 姓
+    string lastName = 6;
+    /// 面会時間帯設定済みフラグ
+    bool configuredVisibleTime = 7;
+    /// 面会枠設定済みフラグ
+    bool configuredMeetingFrame = 8;
+    /// 面会に関する要望設定済みフラグ
+    bool configuredMeetingDemand = 9;
+    /// 関心のある薬剤設定済みフラグ
+    bool configuredInterestedDrug = 10;
+    /// officeUserId
+    string officeUserId = 11;
+}
+
+/// 面会先医師一覧取得リクエスト
+message REListVisitableUsersRequest {
+    /// 事業所ユーザID
+    string userId = 1;
+    /// 事業所ID
+    string officeId = 2;
+    /// flag
+    int32 flag = 3;
+}
+
+/// 面会先医師一覧取得レスポンス
+message REListVisitableUsersResponse {
+    repeated REVisitableUser visitableStaff = 1;
+}
+
+/// 面会先医師情報
+message REVisitableUser {
+    /// 事業所ID
+    string officeId = 1;
+    /// 事業所ユーザID
+    string userId = 2;
+    /// 名
+    string firstName = 3;
+    /// 姓
+    string lastName = 4;
+    /// 所属
+    REDepartment department = 5;
+    /// officeUserId
+    string officeUserId = 6;
+    /// image url
+    string imageUrl = 7;
+}
+
+/// 本人確認ステータス変更リクエスト
+message REPutIdentifyStatusRequest {
+    /// 事業所ユーザID
+    string userId = 1;
+    /// office_id
+    string office_id = 2;
+    /// 本人確認ステータス
+    REIdentifyStatus identifyStatus = 3;
+}
+
+/// 送信制限変更リクエスト
+message REPutMeetingRestrictionRequest {
+    /// 事業所ユーザID
+    string userId = 1;
+    /// office_id
+    string office_id = 2;
+    /// 面会リクエスト送信制限
+    REMeetingRestriction meetingRestriction = 3;
+
+}
+
+/// 事業所設定
+message REOfficeSettings {
+    /// Pr.JOY側に仮登録医療者を表示フラグ
+    bool tmpUserVisible = 1;
+    /// 訪問者管理表示フラグ
+    bool visitorRecordVisible = 2;
+    /// SNSのみ判定フラグ
+    bool onlySNS = 3;
+    /// SNS機能制御
+    bool snsEnabled = 4;
+    /// 入退館導入済フラグ
+    bool adoptedAccess = 5;
+    /// トップページ
+    string topPage = 6;
+    /// 面会制限付き招待フラグ
+    bool restrictedMeeting = 7;
+    /// 勤怠機能制御
+    bool attendance_feature_enabled = 8;
+    /// VPN接続フラグ
+    bool vpnConnection = 9;
+    /// 副作用フラグ
+    bool reactionEnabled = 10;
+    /// Beacapp導入
+    bool beacappFeatureEnabled = 11;
+    // Setting lunchbox for presentation
+    bool lunchBoxEnabled = 12;
+
+    bool reportVisible = 13;
+}
+
+/// 製薬企業会社の問い合わせ番号
+message REPharmacyContact {
+    /// ID
+    string id = 1;
+    /// お薬の連絡先名
+    string contactName = 2;
+    /// お薬の連絡先
+    string phoneNo = 3;
+    /// 作成日時
+    string created = 4;
+    /// 更新日時
+    string updated = 5;
+    /// 削除日時
+    string deleted = 6;
+}
+
+/// 事業所設定取得リクエスト
+message REGetOfficeSettingsRequest {
+    /// 事業所ID
+    string officeId = 1;
+}
+
+/// 事業所設定取得レスポンス
+message REGetOfficeSettingsResponse {
+    /// 事業所設定
+    REOfficeSettings settings = 1;
+}
+
+/// 事業所設定更新リクエスト
+message REPutOfficeSettingsRequest {
+    /// 事業所ID
+    string officeId = 1;
+    /// 事業所設定
+    REOfficeSettings settings = 2;
+}
+
+/// Get List MRUser handle an office
+message REListMRUserHandleOfficeRequest {
+    // officeId of the office
+    string officeId = 1;
+}
+
+/// Get list MRUser handle an office
+message REListMRUserHandleOfficeResponse {
+    repeated MRUserHanleOffice mrUserHandleOffice = 1;
+}
+
+// Information of MRUser that handle that office
+message MRUserHanleOffice {
+    // 業種名
+    string industry = 1;
+    // 会社名
+    string office_name = 2;
+    // 拠点名
+    string branch_name = 3;
+    // 拠点住所
+    string branch_address = 4;
+    // 拠点電話番号
+    string branch_phone_number = 5;
+    // 部署
+    string department = 6;
+    // 職種
+    string job_type = 7;
+    // 姓
+    string last_name = 8;
+    // 名
+    string first_name = 9;
+    // 姓(かな)
+    string last_name_kana = 10;
+    // 名(かな)
+    string first_name_kana = 11;
+    // 電話番号
+    string phone_number = 12;
+    // 病院登録日
+    string assigned = 13;
+    // ユーザ登録日
+    string created = 14;
+    // the userId of mr
+    string user_id = 15;
+    // the officeId of mr
+    string office_id = 16;
+    // 会社名かな
+    string office_name_kana = 17;
+    // 担当領域
+    repeated string handle_fields = 18;
+}
+
+/// ME0015
+message REListUserSpecifiedAuthorityRequest {
+    /// the id of office
+    string officeId = 1;
+    /// authority
+    string authority = 2;
+    /// user id
+    string user_id = 3;
+}
+
+/// ME0015
+message REListUserSpecifiedAuthorityResponse {
+    repeated REGetUserByAuthority reUser = 1;
+}
+
+/// ME0015
+message REGetUserByAuthority {
+    /// the id of user
+    string userId = 1;
+    /// the id of office where that user belong to.
+    string officeId = 2;
+    /// image of user
+    string avatar = 3;
+    /// first name of user
+    string fisrtName = 4;
+    /// last name of user
+    string lastName = 5;
+    /// first name kana of user
+    string firstNameKana = 6;
+    /// last name kana of user
+    string lastNameKana = 7;
+    /// department of user
+    REDepartment reDepartment = 8;
+    /// officeUserId
+    string officeUserId = 9;
+}
+
+message REGetDepartmentsByOfficeIdRequest {
+    string officeId = 1;
+}
+
+///AP5006
+message REListMailUnConfirmAdditionalRequest {
+    string userId = 1;
+}
+
+//AP5006
+message REListMailUnConfirmAdditionalResponse {
+    repeated REMailUnConfirmAdditionalItem mails = 1;
+}
+
+//AP5006
+message REMailUnConfirmAdditionalItem {
+    //Mail address
+    string mailAddress = 1;
+    //is confirmed
+    bool confirmed = 2;
+
+}
+
+message REListHandlingHospitalsRequest {
+    //user id
+    string user_id = 1;
+    //office_id
+    string office_id = 2;
+    // flag personal registration
+    bool personal_flag = 3;
+    // flag ME0032
+    bool other_hospital = 4;
+    // setting in ME0050
+    bool hasMeetingRequestSetting = 5;
+    /// flag name abbreviation
+    bool get_name_abbreviation = 6;
+}
+
+//user id
+message REListHandlingHospitalsWithHistoryRequest {
+    string user_id = 1;
+    //office_id
+    string office_id = 2;
+    bool histories = 3;
+    bool mrShareInfo = 4;
+}
+
+message REListHandlingHospitalsByOfficeIdRequest {
+    string office_id = 1;
+}
+
+
+message REUpdateImageProfileRequest {
+    // officeUserId
+    string office_user_id = 1;
+    // image url
+    string image_url = 2;
+    // identificationImageUrl
+    string identificationImageUrl = 3;
+    // name of File
+    string fileName = 4;
+}
+
+message REUpdateImageProfileOnlyRequest {
+    // officeUserId
+    string office_user_id = 1;
+    // image url
+    string image_url = 2;
+}
+
+/// ME0001
+message REUserRequest {
+    /// id of user
+    string user_id = 2;
+    /// id of office
+    string office_id = 3;
+}
+
+message REUserResponse {
+    string user_id = 1;
+    REUser user = 2;
+    string officeUserId = 3;
+}
+
+message REUserListRequest {
+    repeated REUserRequest user_request = 1;
+}
+
+message REUserListRespone {
+    repeated REUserResponse user_list = 2;
+}
+
+message REAreaTypeItem {
+    string id = 1;
+    string name = 2;
+}
+
+message REPersonalUserRequest {
+
+    string firstName = 1;
+
+    string lastName = 2;
+
+    string firstNameKana = 3;
+
+    string lastNameKana = 4;
+
+    REGender gender = 5;
+
+    string birthDate = 6;
+
+    string jobType = 7;
+
+    repeated RESpecializedDepartment specializedDepartment = 8;
+
+    string loginId = 9;
+
+    string password = 10;
+
+    string newLoginId = 11;
+
+    REDocument document1 = 12;
+
+    REDocument document2 = 13;
+
+}
+
+message REPersonalUserResponse {
+
+    string firstName = 1;
+
+    string lastName = 2;
+
+    string firtNameKana = 3;
+
+    string lastNameKana = 4;
+
+    REGender gender = 5;
+
+    string birthDate = 6;
+
+    string jobType = 7;
+
+    repeated RESpecializedDepartment specializedDepartment = 8;
+
+    string loginId = 9;
+
+    REDocument document1 = 11;
+
+    REDocument document2 = 12;
+
+    bool verificationFlag = 13;
+
+    string verificationStatus = 14;
+
+}
+
+message REForgetPasswordRequest {
+    string email = 1;
+    string product = 2;
+}
+
+message REResetPasswordRequest {
+    string tocken = 1;
+    string password = 2;
+    string birthDate = 3;
+    string product = 4;
+}
+
+message REGetUserListRequest {
+    repeated MEListUserIdAndOfficeId listUserIdAndOfficeId = 1;
+}
+
+message MEListUserIdAndOfficeId {
+    string userId = 1;
+    string officeId = 2;
+}
+
+message REListUser {
+    repeated REUserAndUserId user = 1;
+}
+
+message REUserAndUserId {
+    string userId = 1;
+    REUser reUser = 2;
+}
+/// RE0036
+message REAllowDrSeenRequest {
+    enum Type {
+        // set status for allowing dr see to pr
+        PUT = 0;
+        // get status of allowing dr see to pr
+        GET = 1;
+    }
+    // office user id of pr
+    string officeUserId = 1;
+    // flag
+    bool allowed = 2;
+    // type
+    Type type = 3;
+}
+
+message REAllowDrSeenResponse {
+    // flag allow dr seen self
+    bool allowed = 1;
+}
+
+message MEListHandlingHospitalsResponse {
+    repeated REPharmacyOffice pharmacyOffices = 1;
+}
+
+message REPharmacyOffice {
+    string officeId = 1;
+    string officeName = 2;
+    // office name kana
+    string officeNameKana = 3;
+}
+
+message REUpdateMailAddressResponse {
+    string userId = 1;
+}
+
+message REGetMrUserRequest {
+    string officeUserId = 1;
+}
+
+message REGetMrUserResponse {
+    REPrUserItem user = 1;
+}
+
+message REGetListDrWithConditionRequest {
+    string officeId = 1;
+    // specialize department
+    string typeId = 2;
+    // name of user
+    string keyword = 3;
+}
+
+message REGetListDrWithConditionResponse {
+    repeated REDrItem drItem = 1;
+}
+
+message REDrItem {
+    string userId = 1;
+    string officeId = 2;
+    string firstName = 3;
+    string firstNameKana = 4;
+    string lastName = 5;
+    string lastNameKana = 6;
+    string avatar = 7;
+    string officeUserId = 8;
+    int32 accountStatus = 9;
+    string departmentId = 10;
+}
+
+message UpdateImageProfileAndIdentificationImageRequest {
+    string officeUserId = 1;
+
+    string imageUrlFireBase = 2;
+
+    string identificationImageUrlFireBase = 3;
+}
+
+message REGetListOfficeIdHandlingHospitalRequest {
+    string officeUserId = 1;
+}
+
+message REGetListOfficeIdHandlingHospitalResponse {
+    repeated string officeId = 1;
+}
+
+message REListUserByOfficeUserIdRequest {
+    /// ユーザID
+    repeated string officeUserId = 1;
+
+}
+
+message REListUserByOfficeUserIdResponse {
+    repeated REUser reUser = 1;
+}
+
+message REListOfficeByListOfficeIdRequest {
+    repeated string officeId = 1;
+}
+
+message REListOfficeByListOfficeIdResponse {
+    repeated REOfficeResponse reOfficeResponse = 1;
+}
+
+message REOfficeResponse {
+    string officeId = 1;
+    string keyCode = 2;
+    string restrictedKeyCode = 3;
+    bool allowInvite = 4;
+    string officeName = 5;
+    string nameKana = 6;
+    string nameInitial = 7;
+    string nameAbbreviation = 8;
+    REOfficeType officeType = 9;
+    REAreaTypeItem areaType = 10;
+    bool personalFlag = 11;
+    REContact contact = 12;
+    repeated REDepartment departments = 13;
+    string oldId = 14;
+}
+
+message REGetListUserByConditionRequest {
+    string officeId = 1;
+    string keyword = 2;
+    string departmentId = 3;
+    string jobType = 4;
+}
+
+message REGetListUserByConditionResponse {
+    repeated string officeUserId = 1;
+}
+
+message REListMedicalOfficeUserRequest {
+    string mrOfficeUserId = 1;
+    repeated int32 initial = 2;
+    bool dr = 3;
+    bool pr = 4;
+    bool other = 5;
+    repeated string region = 6;
+    repeated string prefecture = 7;
+    string field = 8;
+    string type = 9;
+    string officeName = 10;
+    string drName = 11;
+    int32 page = 12;
+    int32 size = 13;
+    bool hasCount = 14;
+}
+
+message REListMedicalOfficeUserResponse {
+    repeated REMedicalOfficeUser medicalOfficeUser = 1;
+    int32 sourceDrCount = 2;
+    int32 existDrCount = 3;
+}
+
+message REMedicalOfficeUser {
+    string drOfficeId = 1;
+    string drOfficeName = 2;
+    string drUserId = 3;
+    string drOfficeUserId = 4;
+    string firstName = 5;
+    string lastName = 6;
+    string imageUrl = 7;
+    string jobType = 8;
+    bool settingShareInfo = 9;
+    bool settingRequestMeeting = 10;
+}
+
+message REListMrShareInfoStatusRequest {
+    bool isDr = 1;
+    repeated string drOfficeUserId = 2;
+    repeated string mrOfficeUserId = 3;
+}
+
+message REListMrShareInfoStatusResponse {
+    repeated REMrShareInfoStatus status = 1;
+}
+
+message REMrShareInfoStatus {
+    string mrOfficeUserId = 1;
+    string mrOfficeId = 2;
+    string mrUserId = 3;
+    string drOfficeUserId = 4;
+    string drOfficeId = 5;
+    string drUserId = 6;
+    bool settingShareInfo = 7;
+    bool settingRequestMeeting = 8;
+}
+
+message REPutMrShareInfoStatusRequest {
+    string mrOfficeUserId = 1;
+    string mrOfficeId = 2;
+    string mrUserId = 3;
+
+    message Dr {
+        string drOfficeUserId = 1;
+        string drOfficeId = 2;
+        string drUserId = 3;
+        bool settingShareInfo = 4;
+        bool settingRequestMeeting = 5;
+    }
+
+    repeated Dr dr = 4;
+
+    message Criteria {
+        repeated int32 initial = 1;
+        bool dr = 2;
+        bool pr = 3;
+        bool other = 4;
+        repeated string region = 5;
+        repeated string prefecture = 6;
+        string field = 7;
+        string type = 8;
+        string officeName = 9;
+        string drName = 10;
+    }
+
+    Criteria criteria = 5;
+    bool initAction = 6;
+    bool lastAction = 7;
+    repeated string checkedDr = 8;
+    repeated string uncheckedDr = 9;
+    repeated string onDr = 10;
+    repeated string offDr = 11;
+}
+
+message REPutMrShareInfoStatusResponse {
+    bool selectedAll = 1;
+}
+
+// -------------------------------------------------------
+// 認可処理の処理
+
+enum Role {
+    MR_DEPT_MGT = 0;
+    RR_HEAD_OFFICE = 1;
+    RR_OBSERVER = 2;
+    DF_DELIVERY = 3;
+}
+
+/// ロール
+message RERole {
+    /// ID
+    string id = 1;
+    /// ロールコード
+    string code = 2;
+    /// ロール名
+    string name = 3;
+    /// ロール表示順
+    int32 displayOrder = 4;
+    /// 機能追加日
+    string added = 5;
+    /// 機能削除日
+    string deleted = 6;
+    /// 機能コード
+    string functionCode = 7;
+    /// 機能表示順
+    int32 functionDisplayOrder = 8;
+    /// 作成日時
+    string created = 9;
+    /// 作成者
+    string creator = 10;
+    /// 更新日時
+    string updated = 11;
+    /// 更新者
+    string updater = 12;
+}
+
+/// ロール取得リクエスト
+message REGetRolesRequest {
+    string id = 1;
+}
+
+/// ロール取得レスポンス
+message REGetRolesResponse {
+    repeated Item Items = 1;
+    message Item {
+        REFunction reFunction = 1;
+        RERole reRole = 2;
+    }
+}
+
+/// ロール登録リクエスト
+message RESaveRolesRequest {
+    // ロール
+    RERole reRole = 1;
+}
+
+/// 機能
+message REFunction {
+    /// ID
+    string id = 1;
+    /// 機能コード
+    string code = 2;
+    /// 機能名
+    string name = 3;
+    /// 備考
+    string note = 4;
+    /// 表示順
+    int32 displayOrder = 5;
+    /// 機能追加日
+    string added = 6;
+    /// 機能削除日
+    string deleted = 7;
+    /// 作成日時
+    string created = 8;
+    /// 作成者
+    string creator = 9;
+    /// 更新日時
+    string updated = 10;
+    /// 更新者
+    string updater = 11;
+}
+
+/// 機能取得リクエスト
+message REGetFunctionsRequest {
+    /// ID
+    string id = 1;
+}
+
+/// 機能取得レスポンス
+message REGetFunctionsResponse {
+    /// 機能
+    repeated REFunction reFunctions = 1;
+}
+
+/// 機能登録リクエスト
+message RESaveFunctionRequest {
+    /// 機能
+    REFunction reFunction = 1;
+}
+
+/// 事業所機能
+message REOfficeFunction {
+    /// ID
+    string id = 1;
+    /// オフィスID
+    string officeId = 2;
+    /// 機能ID
+    string functionId = 3;
+    /// 機能付与日
+    string added = 5;
+    /// 作成日時
+    string created = 6;
+    /// 更新日時
+    string updated = 7;
+    /// 削除日時
+    string deleted = 8;
+}
+
+/// 事業所機能登録リクエスト
+message RESaveOfficeFunctionRequest {
+    /// 事業所機能
+    REOfficeFunction reOfficeFunction = 1;
+}
+
+/// 事業所機能削除リクエスト
+message REDeleteOfficeFunctionRequest {
+    /// ID
+    string id = 1;
+}
+
+// -------------------------------------------------------
+message REGetListOfficeRequest {
+    repeated string officeId = 1;
+}
+
+message REGetListOfficeResponse {
+    message Office {
+        string officeId = 1;
+        string officeName = 2;
+        string officeNameKana = 3;
+    }
+
+    repeated Office office = 1;
+
+}
+
+message REGetListOfficeUserIdsByOfficeIdsResponse {
+    message Office {
+        string officeId = 1;
+        repeated string officeUserId = 2;
+    }
+
+    repeated Office office = 1;
+
+}
+
+message REGetListRoleCodeRequest {
+    string officeUserId = 1;
+}
+
+message REGetListRoleCodeResponse {
+    repeated string roleCodes = 1;
+}
+
+message REListHandlingHospitalsNowAndPastRequest {
+    repeated string officeUserId = 1;
+}
+
+message REListHandlingHospitalsNowAndPastResponse {
+    repeated REMedicalOffice handlingHostpitals = 1;
+}
+
+message RERemoveMrAdoptedDrugsRequest {
+    string yjCode = 1;
+    repeated string removedCompanyIds = 2;
+}
+
+message REListOfficeByKeywordRequest {
+    /// keyword
+    string keyword = 1;
+    /// officeId
+    repeated string officeIds = 2;
+}
+
+message RECountUserByListOfficeUserIdResponse {
+    int64 sumMemberOfGroup = 1;
+}
+
+message RECheckHandlingHospitalRequest {
+    repeated string officeIds = 1;
+    string mrOfficeUserId = 2;
+    string mrUserId = 3;
+}
+
+message RECheckHandlingHospitalResponse {
+    bool handlingHospital = 1;
+}
+
+message RECheckHandlingHospitalForListGroupRequest {
+    string mrOfficeUserId = 1;
+    string mrUserId = 2;
+    repeated RECheckHandling checkHandling = 3;
+
+    message RECheckHandling {
+        string groupId = 1;
+        repeated string officeIds = 2;
+    }
+}
+
+message RECheckHandlingHospitalForListGroupResponse {
+
+    repeated RECheckHandling checkHandling = 1;
+
+    message RECheckHandling {
+        string groupId = 1;
+        bool handlingHospital = 2;
+    }
+}
+
+message REGetOfficeNamesByOfficeUserIdsRequest {
+    repeated string officeUserId = 1;
+}
+
+message REGetOfficeNamesByOfficeUserIdsResponse {
+    map<string, string> officeUserIdToOfficeNameMap = 1;
+}
+
+message REListOfficeUserIdByIndustryRequest {
+    repeated string industryIds = 1;
+}
+
+message REListOfficeUserIdByIndustryResponse {
+    repeated string officeUserIds = 1;
+}
+
+message REGetMROfficeUserIdByNameRequest {
+    string keyword = 1;
+    repeated string officeUserIds = 2;
+    repeated string officeIds = 3;
+}
+
+message REGetMROfficeUserIdByNameResponse {
+    repeated string officeUserIds = 1;
+}
+
+message REGetListMrByOfficeIdRequest {
+    string officeId = 1;
+    int32 page = 2;
+    int32 size = 3;
+    string mrName = 4;
+}
+
+message REGetListMrByOfficeIdResponse {
+    repeated REPrUserItem user = 1;
+}
+
+message REGetUserIdListByOfficeIdRequest {
+    string officeId = 1;
+}
+
+message REGetUserIdListByOfficeIdResponse {
+    repeated string userIdList = 1;
+}
+
+message REListOfficeByNameRequest {
+    string name = 1;
+    repeated string officeIds = 2;
+}
+
+message REListOfficeByNameResponse {
+    repeated REOfficeResponse reOfficeResponse = 1;
+}
+
+message REGetMrOfficeUserIdsByOfficeIdRequest {
+    string officeId = 1;
+}
+
+message REGetMrOfficeUserIdsByOfficeIdResponse {
+    repeated string officeUserId = 1;
+}
+
+/// 建物情報
+message REBuilding {
+    /// 建物ID
+    string id = 1;
+
+    /// 建物の名前
+    string name = 2;
+
+    /// 建物内の会議室一覧
+    repeated REConferenceRoom reConferenceRooms = 3;
+}
+
+/// 会議室情報
+message REConferenceRoom {
+    /// 会議室ID
+    string id = 1;
+
+    /// 会議室の名前
+    string name = 2;
+
+    /// 階数
+    int32 floor = 3;
+
+    /// 収容人数
+    int32 capacity = 4;
+
+    /// 備考
+    string  memo = 5;
+
+    /// 建物ごとの会議室の表示順序
+    int32 order = 6;
+
+    /// 建物ID
+    string buildingId = 7;
+
+    /// 建物名
+    string buildingName = 8;
+
+    /// 事業所名
+    string officeName = 9;
+
+    /// 会議室の所属事業所がログインユーザーと同じかどうかのフラグ
+    bool isOutside = 10;
+}
+
+/// 建物・会議室取得リクエスト
+message REGetBuildingAndConferenceRoomSettingRequest {
+    /// 会議室ID
+    string id = 1;
+}
+
+/// RE0040 建物・会議室一括取得リクエスト
+message REGetBuildingsAndConferenceRoomsSettingRequest  {
+    /// 事業所ID
+    string officeId = 1;
+}
+
+/// RE0040 建物・会議室一括取得レスポンス
+message REGetBuildingsAndConferenceRoomsSettingResponse  {
+    /// 建物リスト
+    repeated REBuilding reBuildings = 1;
+}
+
+/// RE0040 建物・会議室一括保存リクエスト
+message RESaveBuildingsAndConferenceRoomsSettingRequest  {
+    /// 事業所ID
+    string officeId = 1;
+
+    /// 建物リスト
+    repeated REBuilding reBuildings = 2;
+}
+
+/// RE0040 建物・会議室一括保存レスポンス
+message RESaveBuildingsAndConferenceRoomsSettingResponse  {
+    /// 新規作成された会議室リスト
+    repeated REConferenceRoom  createdConferenceRooms = 1;
+    /// 削除された会議室リスト
+    repeated REConferenceRoom  deletedConferenceRooms = 2;
+}
+
+message REFindAvailableConferenceRoomsRequest {
+    repeated string reservedConferenceRoomIds = 1;
+    string selectedConferenceRoomId = 2;
+    bool isSelectedConferenceRoomAvailable = 3;
+    string officeId = 4;
+}
+
+message REFindAvailableConferenceRoomsResponse {
+    repeated REConferenceRoom reConferenceRooms = 1;
+}
+
+message REPrOfficesByDrOfficeIdRequest {
+    string office_id = 1;
+}
+
+message REPrOfficesByDrOfficeIdResponse {
+    repeated REPharmacyOfficeInfo prOfficeInfo = 1;
+}
+message REPharmacyOfficeInfo {
+    string pr_office_id = 1;
+    string pr_office_name = 2;
+}
+
+message RETemporaryRegistrationRequest {
+    string firstNameKanji = 1;
+    string familyNameKanji = 2;
+    string firstNameKana = 3;
+    string familyNameKana = 4;
+    string jobType = 5;
+    string officeId = 6;
+    string departmentId = 7;
+    REPrInformation rePrInformation = 8;
+
+    message REPrInformation {
+        string prOfficeUserId = 1;
+        string prOfficeId = 2;
+        string prIndustryType = 3;
+        string prMobileNo = 4;
+        string prName = 5;
+        string prOfficeName = 6;
+    }
+}
+
+message REGetListOfficeUserByConditionRequest {
+    string officeId = 1;
+    string departmentId = 2;
+    string keyword = 3;
+    string jobType = 4;
+    repeated int32 accountStatus = 5;
+    string loginOfficeUserId = 6;
+}
+
+message REGetListOfficeUserByConditionResponse {
+    repeated REUser user = 1;
+}
+
+message REGetOfficeUsersByOfficeIdRequest {
+    string officeId = 1;
+}
+
+message REGetOfficeUsersByOfficeIdResponse {
+    repeated REUser user = 1;
+}

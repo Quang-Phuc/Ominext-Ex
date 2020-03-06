@@ -1,0 +1,452 @@
+
+endpoint:
+  re:
+    dr:
+      users:  /dr/re/users
+      password: /dr/re/password
+      notification: /dr/re/notification
+      first_entry:
+        user: /dr/re/first_entry/user
+      staff_admin:
+        users: /dr/re/staff_admin/users
+      staff_list:
+        users: /dr/re/staff_list/users
+      detail_user:
+        user:  /dr/re/detail_user/user
+        user_group:  /dr/re/detail_user/user_group
+      grant_auth:
+        user: /dr/re/grant_auth/user
+        users: /dr/re/grant_auth/users
+      side_menu: /dr/re/side_menu
+      get_event: /dr/ca/get_event
+      delete_event: /dr/ca/delete_event
+      personal:
+        get_user: /dr/re/detail_user/personal
+        put_user: /dr/re/put_user/personal
+
+    pr:
+      users: /pr/re/users
+      password: /pr/re/password
+      notification: /pr/re/notification
+      keycode: /pr/re/keycode
+      get_user_entry: /pr/re/first_entry/get_user_entry
+      create_user: /pr/re/first_entry/create_user
+      get_list_phone: /pr/re/first_entry/get_list_phone
+      update_image_profile: /pr/re/update_image_profile
+      update_image_profile_only: /pr/re/update_image_profile_only
+      delete_list_staff: /pr/re/delete_list_staff
+  me:
+    dr:
+      get_block_users: /dr/me/get_block_users
+      block_user: /dr/me/block_user/{userId}/{officeId}/{blockedUserId}/{blockedOfficeId}/{block}
+      unblock_user: /dr/me/unblock_user/{userId}/{officeId}/{blockedUserId}/{blockedOfficeId}
+      get_visitable_users: /dr/me/get_visitable_users
+      add_visitor_record: /dr/me/add_visitor_record
+      get_visitor_record: /dr/me/get_visitor_record
+      delete_visitor_record: /dr/me/delete_visitor_record
+      get_pic: /dr/me/get_pic
+      put_identify_status: /dr/me/put_identify_status
+      meeting_restriction: /dr/me/put_meeting_restriction
+      get_interested_drugs: /dr/me/get_interested_drugs
+      put_interested_drugs: /dr/me/put_interested_drugs
+      get_meeting_demands: /dr/me/get_meeting_demands
+      put_meeting_demands: /dr/me/put_meeting_demands
+      get_meeting_rule: /dr/me/get_meeting_rule
+      put_meeting_rule: /dr/me/put_meeting_rule
+      get_aggregation: /dr/me/get_aggregation/{type}/{date}/{sort}
+      get_aggregation_detail: /dr/me/get_aggregation_detail
+      get_list_all_handling: /dr/me/get_list_all_handling
+      rating_visitor: /dr/me/rating_visitor
+      check_display_rating: /dr/me/check_display_rating
+      get_all_propriety_details: /dr/me/get_all_propriety_details
+      rating_web_meeting: /dr/me/rating_web_meeting
+      list_visitor_histories_dr: /dr/me/list_visitor_histories_dr
+      put_requires_report: /dr/me/put_requires_report
+      put_list_requires_report: /dr/me/put_list_requires_report
+      get_visitor_history_details: /dr/me/get_visitor_history_details
+      edit_meeting_memo: /dr/me/edit_meeting_memo
+      dr_response_report_aggregate: /dr/me/dr_response_report_aggregate
+      dr_response_report_aggregate_gt8: /dr/me/dr_response_report_aggregate_gt8
+      dr_response_report_aggregate_propriety: /dr/me/dr_response_report_aggregate_propriety
+      create_skip_rating_history: /dr/me/create_skip_rating_history
+    pr:
+      get_meeting_frame: /pr/me/get_meeting_frame
+      apply_meeting_frame: /pr/me/apply_meeting_frame
+      get_dr_profile: /pr/me/get_dr_profile
+      get_drugs_in_charge: /pr/me/get_drugs_in_charge
+      put_drugs_in_charge: /pr/me/put_drugs_in_charge
+      add_drugs_request: /pr/me/add_drugs_request
+      get_visitor_histories_rated: /pr/me/get_visitor_histories_rated
+      list_drugs_report: /pr/me/list_drugs_report
+      list_dr_report: /pr/me/list_dr_report
+      get_list_purpose: /pr/me/get_list_purpose
+      list_mr_report: /pr/me/list_mr_report
+      get_visitor_history_details: /pr/me/get_visitor_history_details
+      put_mr_report: /pr/me/put_mr_report
+      put_new_meeting: /pr/me/put_new_meeting
+      dr_response_report_aggregate: /pr/me/dr_response_report_aggregate
+      dr_response_report_aggregate_gt8: /pr/me/dr_response_report_aggregate_gt8
+      dr_response_report_aggregate_propriety: /pr/me/dr_response_report_aggregate_propriety
+  wm:
+    dr:
+      meeting_document:
+        list: /dr/wm/list_meeting_documents
+        create_folder: /dr/wm/create_folder
+        delete: /dr/wm/delete_meeting_documents
+        rename: /dr/wm/rename_meeting_document
+        set_password: /dr/wm/set_password_meeting_document
+        count: /dr/wm/count_meeting_documents
+        preprocess: /dr/wm/preprocess_meeting_document
+        process: /dr/wm/process_meeting_document
+        copy_url: /wm/copy_meeting_document_url
+    pr:
+      meeting_document:
+        prepare: /pr/wm/prepare_meeting_document
+        list: /pr/wm/list_meeting_documents
+        create_folder: /pr/wm/create_folder
+        delete: /pr/wm/delete_meeting_documents
+        rename: /pr/wm/rename_meeting_document
+        set_password: /pr/wm/set_password_meeting_document
+        count: /pr/wm/count_meeting_documents
+        preprocess: /pr/wm/preprocess_meeting_document
+        process: /pr/wm/process_meeting_document
+      setting_dr:
+        prepare: /pr/wm/prepare_setting_dr
+        get: /pr/wm/get_setting_dr
+        put: /pr/wm/put_setting_dr
+        import: /pr/wm/import_setting_dr
+  sh:
+    dr:
+      get_skill_settings: /dr/sh/get_skill_settings
+      put_skill_settings: /dr/sh/put_skill_settings
+      get_team_settings: /dr/sh/get_team_settings
+      put_team_settings: /dr/sh/put_team_settings
+      get_shift_table: /dr/sh/get_shift_table
+      shift_item_settings: /dr/sh/shift-item-settings
+      publish_shift: /dr/sh/publish_shift
+      put_shift_cell: /dr/sh/put_shift_cell
+      get_staff_settings: /dr/sh/get_staff_settings
+      put_staff_settings: /dr/sh/put_staff_settings
+      get_request_content: /dr/sh/get_request_content
+      put_request_content: /dr/sh/put_request_content
+      check_request_content: /dr/sh/check_request_content
+      copy_shift_data_by_month: /dr/sh/copy_shift_data_by_month
+      get_memos: /dr/sh/get_memos
+      put_memos: /dr/sh/put_memos
+      download_edit_log_csv: /dr/sh/download_edit_log_csv
+      get_monthly_shift_table_for_user: /dr/sh/get_monthly_shift_table_for_user
+      get_guests: /dr/sh/get_guests
+      get_timesheets: /dr/sh/get_timesheets
+      put_guests: /dr/sh/put_guests
+      get_suggestion: /dr/sh/get_suggestion
+      put_suggestion: /dr/sh/put_suggestion
+      init_master_data: /dr/sh/init_master_data
+      get_time_shifts: /dr/sh/get_time_shifts
+      put_time_shifts: /dr/sh/put_time_shifts
+      get_weekly_shift_table_for_user: /dr/sh/get_weekly_shift_table_for_user
+      get_months_copy: /dr/sh/get_months_copy
+      get_holiday_events: /dr/sh/get_holiday_events
+  gr:
+    dr:
+      delete: /dr/gr/delete
+      department_users: /dr/gr/dept/user
+      inside:
+        create:
+          prepare: /dr/gr/inside/create/prepare
+          save: /dr/gr/inside/create/save
+          department:
+            prepare: /dr/gr/inside/create/dept/prepare
+            create: /dr/gr/inside/create/dept/save
+        edit:
+          dept:
+            prepare: /dr/gr/inside/edit/dept/prepare
+            save: /dr/gr/inside/edit/dept/save
+      member:
+        join:
+          prepare: /dr/gr/member/join/prepare
+          agree: /dr/gr/member/join/agree
+          disagree: /dr/gr/member/join/disagree
+  ma:
+    get:
+      pharmacy_offices: /ma/get/pharmacy_offices
+      prefectures: /ma/get/prefectures
+      industry_types: /ma/get/industry_types
+      job_types: /ma/get/job_types
+      specialty_areas: /ma/get/specialty_areas
+
+      office_types: /ma/get/office_types
+      companies: /ma/get/companies
+      drugs: /ma/get/drugs
+      drugs_with_page: /ma/get/drugs_with_page
+      mr_job_types: /ma/get/mr_job_types
+      mr_field_types: /ma/get/mr_field_types
+      drug_generic_names: /ma/get/drug_generic_names
+      drug_efficacies: /ma/get/drug_efficacies
+      medical_offices: /ma/get/medical_offices
+      medical_offices_with_page: /ma/get/medical_offices_with_page
+      specialty_types: /ma/get/specialty_types
+      company_drugs: /ma/get/company_drugs
+      attendance_reasons:  /ma/get/attendance_reasons
+      mr_equipment_types: /ma/get/equipment_types
+      mr_equipment: /ma/get/equipments
+      other_types: /ma/get/other_types
+
+  cm:
+    drjoy_info: /cm/drjoy_info
+    drjoy_info_news: /cm/drjoy_info/news
+    drjoy_info_read: /cm/drjoy_info/read
+    contactus: /cm/contactus
+    sent_office_info: /cm/sent_office_info
+    sent_office_info_one: /cm/sent_office_info/{infoId}
+    office: /cm/office
+    office_info: /cm/office_info
+    get_list_office_group: /cm/get_list_office_group
+    count_office_group: /cm/count_office_group
+    delete_office_group: /cm/delete_office_group
+    office_info_one: /cm/office_info/{infoId}
+    office_info_news: /cm/office_info/news
+    office_info_read: /cm/office_info/read
+    favorite:
+      sns: /cm/favorite/sns
+      sns_one: /cm/favorite/sns/{favoriteId}
+    recieved_office_info: /cm/recieved_office_info
+    recieved_office_info_one: /cm/recieved_office_info/{infoId}
+    cm0012:
+      prepare: /cm/0012/prepare
+    kpi:
+      bed_use_rate: /cm/kpi/bed_use_rate
+      hospital_stay: /cm/kpi/hospital_stay
+      relief_class: /cm/kpi/relief_class
+      nursing_need: /cm/kpi/nursing_need
+      outpatient_number: /cm/kpi/outpatient_number
+      other: /cm/kpi/other
+      d1_graph_data: /cm/kpi/d1_graph_data
+      d2_graph_data: /cm/kpi/d2_graph_data
+      settings: /cm/kpi/settings
+    curation: /cm/curation
+    search:
+      keyword: /cm/search/keyword
+    term_of_use:
+      one: /cm/term_of_use/one
+      check: /cm/term_of_use/check
+      approve: /cm/term_of_use/approve
+    banner:
+      list: /cm/banner/list
+    template:
+      list: /cm/template/list
+      save: /cm/template/save
+      delete: /cm/template/delete
+  rr:
+    dr:
+      get_reaction_reports: /dr/rr/get_reaction_reports
+      get_mr_users: /dr/rr/get_mr_users
+      create_report: /dr/rr/create_report
+      get_reaction_report: /dr/rr/get_reaction_report/{reportId}
+      download_csv: /dr/rr/download_csv
+      check_permission: /dr/rr/check_permission
+    pr:
+      get_list_report: /pr/rr/get_list_report
+      get_list_office: /pr/rr/get_list_office
+      get_report_detail: /pr/rr/get_report_detail/{reportId}
+      download_csv: /pr/rr/download_csv
+      create_report: /pr/rr/create_report
+      handling_hospitals_with_keyword: /pr/rr/handling_hospitals_with_keyword
+      check_permission: /pr/rr/check_permission
+  df:
+    dr:
+      get_list_distribution: /dr/df/get_list_distribution
+      get_distribution: /dr/df/get_distribution/{id}
+      put_seen: /dr/df/put_seen
+    pr:
+      put_distribution: /pr/df/put_distribution
+      get_list_distribution: /pr/df/get_list_distribution
+      get_distribution: /pr/df/get_distribution/{id}
+      get_seen_offices: /pr/df/get_seen_offices
+      get_seen_users: /pr/df/get_seen_users
+      list_office_with_keyword: /pr/df/list_office_with_keyword
+  file:
+    transfer: /file/transfer
+    download: /file/download
+  at:
+    dr:
+      routing:  /dr/at/routing
+      at-clock:
+        heart-beat: /dr/at/at-clock/heart-beat
+      log:
+        check: /dr/at/log/check
+        status: /dr/at/log/status
+        time: /dr/at/log/time
+        checking_log: /dr/at/log/checking_log
+        csv_check_log: /dr/at/log/csv_check_log
+      staff:
+        timesheet: /dr/at/staff/timesheet
+        csv_detail_timesheet: /dr/at/staff/csv_detail_timesheet
+        details_by_month: /dr/at/staff/details_by_month
+        print_timesheet: /dr/at/staff/print_timesheet
+        alert: /dr/at/staff/alert
+        department:
+          day: /dr/at/staff/department/day
+          month: /dr/at/staff/department/month
+          download_by_day: /dr/at/staff/department/download_by_day
+          download_by_month: /dr/at/staff/department/download_by_month
+
+          add_student: /dr/at/staff/department/add_student
+          edit_student: /dr/at/staff/department/edit_student
+          del_student: /dr/at/staff/department/del_student
+          sort_name_student: /dr/at/staff/department/sort_name_student
+          sort_pga_student: /dr/at/staff/department/sort_pga_student
+          show_student: /dr/at/staff/department/show_student
+
+        get_work_csv: /dr/at/staff/get_work_csv
+        get_prepare_data_csv: /dr/at/staff/get_prepare_data_csv
+        post_create_work_csv: /dr/at/staff/post_create_work_csv
+        get_download_csv: /dr/at/staff/get_download_csv
+      setting:
+        staff: /dr/at/setting/staff
+        copy_staff: /dr/at/setting/copy_staff
+        ot_and_nightwork: /dr/at/setting/ot_and_nightwork
+        break_time: /dr/at/setting/break_time
+        idm:
+          staff_ic:  /dr/at/setting/idm/staff_ic
+          delete: /dr/at/setting/idm/delete
+          import: /dr/at/setting/idm/import
+          download: /dr/at/setting/idm/download
+        request_ot_training: /dr/at/setting/request_ot_training
+        request_ot_training_mobile: /dr/at/setting/request_ot_training_mobile
+        request_dayoff_watch: /dr/at/setting/request_dayoff_watch
+        request_dayoff_watch_mobile: /dr/at/setting/request_dayoff_watch_mobile
+        basic_setting: /dr/at/setting/basic_setting
+        clone_setting: /dr/at/setting/clone_setting
+        list_department: /dr/at/setting/list_department
+        manager_request: /dr/at/setting/manager_request
+        staff_request: /dr/at/setting/staff_request
+        create_manager_request: /dr/at/setting/create_manager_request
+        user_list: /dr/at/setting/user_list
+        get_staff_working_pattern: /dr/at/setting/get_staff_working_pattern
+        get_holidays: /dr/at/setting/get_holidays
+        put_holidays: /dr/at/setting/put_holidays
+        get_group_member: /dr/at/setting/get_group_member
+        put_group_member: /dr/at/setting/put_group_member
+        get_groups: /dr/at/setting/get_groups
+        put_groups: /dr/at/setting/put_groups
+        get_staff_month_data: /dr/at/setting/get_staff_month_data
+        put_staff_month_data: /dr/at/setting/put_staff_month_data
+        get_staff_working_schedule_variable: /dr/at/setting/get_staff_working_schedule_variable
+        put_staff_working_schedule_variable: /dr/at/setting/put_staff_working_schedule_variable
+        get_staff_working_schedule_individual: /dr/at/setting/get_staff_working_schedule_individual
+        put_staff_working_schedule_individual: /dr/at/setting/put_staff_working_schedule_individual
+        get_discretionary_pattern: /dr/at/setting/get_discretionary_pattern
+        put_discretionary_pattern: /dr/at/setting/put_discretionary_pattern
+      request:
+        ot_request: /dr/at/request/ot_request
+        day_off_request: /dr/at/request/day_off_request
+        permission_off_request: /dr/at/request/permission_off_request
+        personal:
+          get:  /dr/at/request/personal/get
+          put_mark:  /dr/at/request/personal/put_mark
+          put_dismiss : /dr/at/request/personal/put_dismiss
+      admin_request:
+        list_request: /dr/at/admin_request/list_request
+        accept: /dr/at/admin_request/accept
+        reject: /dr/at/admin_request/reject
+        mark_as_seen: /dr/at/admin_request/mark_as_seen
+        list_department: /dr/at/admin_request/list_department
+  pre:
+    dr:
+      presentation:
+        presentation_detail: /dr/presentation/presentation_detail
+        dr_accept_presentation_request: /dr/presentation/dr_accept_presentation_request
+        dr_check_accept_presentation_request: /dr/presentation/dr_check_accept_presentation_request
+        dr_refuse_presentation_request: /dr/presentation/dr_refuse_presentation_request
+        dr_cancel_presentation_frame: /dr/presentation/dr_cancel_presentation_frame
+        get_list_group: /dr/presentation/get_list_group
+        valid_presentation_frame: /dr/presentation/valid_presentation_frame
+        presentation_frame: /dr/presentation/presentation_frame
+        list_presentation_requests: /dr/presentation/list_presentation_requests
+        presentation_frame_detail: /dr/presentation/presentation_frame_detail
+        get_presentation_topics: /dr/presentation/get_presentation_topics
+        get_presentation_topic_detail: /dr/presentation/get_presentation_topic_detail
+        presentation_add_request: /dr/presentation/add_presentation_request
+        get_presentation_frames: /dr/presentation/list_presentation_frames
+        dr_cancel_presentation_request: /dr/presentation/dr_cancel_presentation_request
+        check_room_chat: /dr/presentation/check_room_chat
+        lunch_boxs: /dr/presentation/lunch_boxs
+        get_office_settings: /dr/presentation/get_office_settings
+    pr:
+      presentation:
+        mr_cancel_presentation_request: /pr/presentation/mr_cancel_presentation_request
+        presentation_detail: /pr/presentation/presentation_detail
+        presentation_add_topic: /pr/presentation/add_presentation_topic
+        presentation_put_topic: /pr/presentation/put_presentation_topic
+        presentation_delete_topic: /pr/presentation/delete_presentation_topic
+        get_presentation_topics: /pr/presentation/get_presentation_topics
+        get_presentation_topic_detail: /pr/presentation/get_presentation_topic_detail
+        get_presentation_frames: /pr/presentation/list_presentation_frames
+        presentation_frame_detail: /pr/presentation/presentation_frame_detail
+        list_presentation_requests: /pr/presentation/list_presentation_requests
+        mr_refuse_presentation: /pr/presentation/refuse_presentation
+        apply_presentation_frame: /pr/presentation/apply_presentation_frame
+        check_room_chat: /pr/presentation/check_room_chat
+        mr_check_accept_presentation_request: /pr/presentation/mr_check_accept_presentation_request
+        mr_accept_presentation_request: /pr/presentation/mr_accept_presentation_request
+  ch:
+    pr:
+      add_alert_condition: /pr/ch/add_alert_condition
+      get_all_alert_condition: /pr/ch/get_all_alert_condition
+      delete_alert_condition: /pr/ch/delete_alert_condition
+      alert_condition_template: /pr/ch/alert_condition_template
+      get_room_logs: /pr/ch/get_room_logs
+      get_members: /pr/ch/get_members
+      get_message_logs: /pr/ch/get_message_logs
+      list_mr_by_officeId: /pr/ch/list_mr_by_officeId
+      get_function_codes: /pr/ch/get_function_codes
+
+  rs:
+    dr:
+      rs-0001:
+        get-init-data: /dr/rs/rs-0001/get-init-data
+        get-consid: /dr/rs/rs-0001/get-consid
+        get-meddra-code: /dr/rs/rs-0001/get-meddra-code
+        get-report-data: /dr/rs/rs-0001/get-report-data
+        get-adr-signal: /dr/rs/rs-0001/get-adr-signal
+        get-drug-signal: /dr/rs/rs-0001/get-drug-signal
+        get-tenpu-links: /dr/rs/rs-0001/get-tenpu-links
+        get-drug-count-and-adr-signal: /dr/rs/rs-0001/get-drug-count-and-adr-signal
+        get-adr-count-and-drug-signal: /dr/rs/rs-0001/get-adr-count-and-drug-signal
+        get-version: /dr/rs/rs-0001/get-version
+      rs-0002:
+        get-init-data: /dr/rs/rs-0002/get-init-data
+        get-adr-signal: /dr/rs/rs-0002/get-adr-signal
+      rs-0003:
+        get-drug-signal: /dr/rs/rs-0003/get-drug-signal
+      rs-0004:
+        get-init-data: /dr/rs/rs-0004/get-init-data
+      rs-0007:
+        get-report-comparison-side-effects: /dr/rs/rs-0007/get-report-comparison-side-effects
+      rs-0008:
+        get-report-side-effects: /dr/rs/rs-0008/get-report-side-effects
+    pr:
+      rs-1001:
+        get-init-data: /pr/rs/rs-1001/get-init-data
+        get-consid: /pr/rs/rs-1001/get-consid
+        get-meddra-code: /pr/rs/rs-1001/get-meddra-code
+        get-report-data: /pr/rs/rs-1001/get-report-data
+        get-adr-signal: /pr/rs/rs-1001/get-adr-signal
+        get-drug-signal: /pr/rs/rs-1001/get-drug-signal
+        get-tenpu-links: /pr/rs/rs-1001/get-tenpu-links
+        get-drug-count-and-adr-signal: /pr/rs/rs-1001/get-drug-count-and-adr-signal
+        get-adr-count-and-drug-signal: /pr/rs/rs-1001/get-adr-count-and-drug-signal
+        get-version: /pr/rs/rs-1001/get-version
+      rs-1002:
+        get-init-data: /pr/rs/rs-1002/get-init-data
+        get-adr-signal: /pr/rs/rs-1002/get-adr-signal
+      rs-1003:
+        get-drug-signal: /pr/rs/rs-1003/get-drug-signal
+      rs-1004:
+        get-init-data: /pr/rs/rs-1004/get-init-data
+      rs-1007:
+        get-report-comparison-side-effects: /pr/rs/rs-1007/get-report-comparison-side-effects
+      rs-1008:
+        get-report-side-effects: /pr/rs/rs-1008/get-report-side-effects
+
+
